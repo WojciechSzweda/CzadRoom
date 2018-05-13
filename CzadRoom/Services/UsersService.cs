@@ -1,19 +1,19 @@
 ﻿using CzadRoom.Contexts;
 using CzadRoom.Models;
-using CzadRoom.Repositories.Interfaces;
+using CzadRoom.Services.Interfaces;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CzadRoom.Repositories
+namespace CzadRoom.Services
 {
-    public class UsersRepository : IUsersRepository {
+    public class UsersService : IUsersService {
 
         private readonly IMongoDbContext _context;
 
-        public UsersRepository(IMongoDbContext context) {
+        public UsersService(IMongoDbContext context) {
             _context = context;
         }
 
