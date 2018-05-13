@@ -37,6 +37,7 @@ namespace CzadRoom
             services.AddTransient<IMongoDbContext, MongoDbContext>();
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<ILogger, Logger>();
+            services.AddTransient<IJwtToken, JwtTokenManager>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
                 options.TokenValidationParameters = new TokenValidationParameters {

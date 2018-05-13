@@ -9,3 +9,8 @@
 @13.05.2018 12:08:09: Login user: Tester2
 @13.05.2018 12:09:21: Deleted user: tester1
 @13.05.2018 12:09:50: Deleted user: Tester2
+@13.05.2018 19:56:53: Login user: Tester2
+@13.05.2018 19:58:58: Deleted user: Tester2
+@13.05.2018 20:01:13: Created user: Tester2
+@13.05.2018 20:01:19: Created user: Tester1
+@13.05.2018 20:01:27: Created user: Tester3

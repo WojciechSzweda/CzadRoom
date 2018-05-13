@@ -12,24 +12,26 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CzadRoom.Controllers {
     public class AccountController : Controller {
-        private readonly IUsersService _usersRepository;
+        private readonly IUsersService _usersService;
         private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
-        public AccountController(IUsersService usersRepository, IConfiguration configuration, ILogger logger) {
-            _usersRepository = usersRepository;
+        private readonly IJwtToken _jwtToken;
+        public AccountController(IUsersService usersService, IConfiguration configuration, ILogger logger, IJwtToken jwtToken) {
+            _usersService = usersService;
             _configuration = configuration;
             _logger = logger;
+            _jwtToken = jwtToken;
         }
 
         [HttpGet, Authorize]
         public async Task<IActionResult> GetAllUsers() {
-            return new ObjectResult(await _usersRepository.GetUsers());
+            return new ObjectResult(await _usersService.GetUsers());
         }
 
         // GET: api/Users/username
         [HttpGet, Authorize]
         public async Task<IActionResult> Get(string name) {
-            var user = await _usersRepository.GetUser(name);
+            var user = await _usersService.GetUser(name);
             if (user == null)
                 return new NotFoundResult();
             return new ObjectResult(user);
@@ -38,14 +40,52 @@ namespace CzadRoom.Controllers {
         [HttpPost, AllowAnonymous]
         //TODO: change to viewmodel
         public async Task<IActionResult> Create([FromBody]User user) {
-            var userDB = await _usersRepository.GetUser(user.Username);
-            if (user != null) {
+            var userDB = await _usersService.GetUser(user.Username);
+            if (userDB != null) {
                 return Json("username taken");
             }
                 user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password, BCrypt.Net.BCrypt.GenerateSalt());
-            await _usersRepository.Create(user);
+            await _usersService.Create(user);
             _logger.Log($"Created user: {user.Username}");
             return new OkObjectResult(user);
+        }
+
+        [HttpPut, Authorize]
+        public async Task<IActionResult> Update(string username, [FromBody]User user) {
+            if (User.Identity.Name != username)
+                return Unauthorized();
+            var userDB = await _usersService.GetUser(username);
+            if (userDB == null)
+                return new NotFoundResult();
+            user.Id = userDB.Id;
+            await _usersService.Update(user);
+            _logger.Log($"Updated user: {userDB.Username}");
+            return new OkObjectResult(user);
+        }
+
+        [HttpDelete, Authorize]
+        public async Task<IActionResult> Delete(string username) {
+            if (User.Identity.Name != username)
+                return Unauthorized();
+            var userDB = await _usersService.GetUser(username);
+            if (userDB == null)
+                return Json($"{username} doesnt exists");
+            await _usersService.Delete(username);
+            _logger.Log($"Deleted user: {userDB.Username}");
+            return new OkResult();
+        }
+
+        [HttpPost, AllowAnonymous]
+        public async Task<IActionResult> Login([FromBody]User user) {
+            var userDB = await _usersService.GetUser(user.Username);
+            if (userDB == null)
+                return Json("user not found");
+            if (!BCrypt.Net.BCrypt.Verify(user.Password, userDB.Password)) {
+                return Json("password mismatch");
+            }
+            var tokenString = _jwtToken.GenerateToken(userDB, DateTime.Now.AddMinutes(60));
+            _logger.Log($"Login user: {userDB.Username}");
+            return Ok(new { token = tokenString });
         }
 
         [AllowAnonymous]
@@ -56,52 +96,8 @@ namespace CzadRoom.Controllers {
         [Authorize]
         public IActionResult TestJwt() {
             var user = User.Identity as ClaimsIdentity;
-            return Ok();
-        }
-
-        [HttpPut, Authorize]
-        public async Task<IActionResult> Update(string username, [FromBody]User user) {
-            var userDB = await _usersRepository.GetUser(username);
-            if (userDB == null)
-                return new NotFoundResult();
-            user.Id = userDB.Id;
-            await _usersRepository.Update(user);
-            _logger.Log($"Updated user: {userDB.Username}");
-            return new OkObjectResult(user);
-        }
-
-        [HttpDelete, Authorize]
-        public async Task<IActionResult> Delete(string username) {
-            var userDB = await _usersRepository.GetUser(username);
-            if (userDB == null)
-                return Json($"{username} doesnt exists");
-            await _usersRepository.Delete(username);
-            _logger.Log($"Deleted user: {userDB.Username}");
-            return new OkResult();
-        }
-
-        [HttpPost, AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody]User user) {
-            var userDB = await _usersRepository.GetUser(user.Username);
-            if (userDB == null)
-                return Json("user not found");
-            if (!BCrypt.Net.BCrypt.Verify(user.Password, userDB.Password)) {
-                return Json("password mismatch");
-            }
-            var tokenString = GenerateToken(userDB);
-            _logger.Log($"Login user: {userDB.Username}");
-            return Ok(new { token = tokenString });
-        }
-
-        private string GenerateToken(User user) {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var token = new JwtSecurityToken(_configuration["Jwt:Issuer"],
-         _configuration["Jwt:Issuer"],
-         expires: DateTime.Now.AddMinutes(60),
-         signingCredentials: creds);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            
+            return Ok(User.Identity.Name);
         }
     }
 }
