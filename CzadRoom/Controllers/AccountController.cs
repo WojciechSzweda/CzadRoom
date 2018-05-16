@@ -3,9 +3,15 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using CzadRoom.Attributes;
 using CzadRoom.Models;
 using CzadRoom.Services.Interfaces;
+using CzadRoom.ViewModels;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -13,91 +19,105 @@ using Microsoft.IdentityModel.Tokens;
 namespace CzadRoom.Controllers {
     public class AccountController : Controller {
         private readonly IUsersService _usersService;
-        private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
-        private readonly IJwtToken _jwtToken;
-        public AccountController(IUsersService usersService, IConfiguration configuration, ILogger logger, IJwtToken jwtToken) {
+        public AccountController(IUsersService usersService, ILogger logger) {
             _usersService = usersService;
-            _configuration = configuration;
             _logger = logger;
-            _jwtToken = jwtToken;
         }
 
-        [HttpGet, Authorize]
-        public async Task<IActionResult> GetAllUsers() {
-            return new ObjectResult(await _usersService.GetUsers());
+        [HttpGet]
+        public IActionResult Register() {
+            if (User.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "Home");
+            return View();
         }
 
-        // GET: api/Users/username
-        [HttpGet, Authorize]
-        public async Task<IActionResult> Get(string name) {
-            var user = await _usersService.GetUser(name);
-            if (user == null)
-                return new NotFoundResult();
-            return new ObjectResult(user);
-        }
-
-        [HttpPost, AllowAnonymous]
-        //TODO: change to viewmodel
-        public async Task<IActionResult> Create([FromBody]User user) {
-            var userDB = await _usersService.GetUser(user.Username);
-            if (userDB != null) {
-                return Json("username taken");
+        [HttpPost]
+        public async Task<IActionResult> Register(UserRegisterViewModel userVM) {
+            if (!ModelState.IsValid) {
+                return View();
             }
-                user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password, BCrypt.Net.BCrypt.GenerateSalt());
+            var userDB = await _usersService.GetUser(userVM.Username);
+            if (userDB != null) {
+                ViewData["Error"] = "Username already taken";
+                return View();
+            }
+            var checkEmailUser = await _usersService.GetUserByEmail(userVM.Email);
+            if (checkEmailUser != null) {
+                ViewData["Error"] = "Email already in use";
+                return View();
+            }
+            //TODO: implement mapper
+            //TODO: nickname creator
+            var user = new User { Email = userVM.Email, Nickname = userVM.Nickname, Username = userVM.Username };
+            user.Password = BCrypt.Net.BCrypt.HashPassword(userVM.Password, BCrypt.Net.BCrypt.GenerateSalt());
             await _usersService.Create(user);
             _logger.Log($"Created user: {user.Username}");
-            return new OkObjectResult(user);
+            return RedirectToAction("Login");
         }
 
-        [HttpPut, Authorize]
-        public async Task<IActionResult> Update(string username, [FromBody]User user) {
-            if (User.Identity.Name != username)
-                return Unauthorized();
-            var userDB = await _usersService.GetUser(username);
-            if (userDB == null)
-                return new NotFoundResult();
-            user.Id = userDB.Id;
-            await _usersService.Update(user);
-            _logger.Log($"Updated user: {userDB.Username}");
-            return new OkObjectResult(user);
+
+        [HttpGet]
+        public IActionResult Login(string returnUrl = null) {
+            if (User.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "Home");
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
         }
 
-        [HttpDelete, Authorize]
-        public async Task<IActionResult> Delete(string username) {
-            if (User.Identity.Name != username)
-                return Unauthorized();
-            var userDB = await _usersService.GetUser(username);
-            if (userDB == null)
-                return Json($"{username} doesnt exists");
-            await _usersService.Delete(username);
-            _logger.Log($"Deleted user: {userDB.Username}");
-            return new OkResult();
-        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(UserLoginViewModel user, string returnUrl = null) {
 
-        [HttpPost, AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody]User user) {
             var userDB = await _usersService.GetUser(user.Username);
             if (userDB == null)
-                return Json("user not found");
+                return View();
             if (!BCrypt.Net.BCrypt.Verify(user.Password, userDB.Password)) {
                 return Json("password mismatch");
             }
-            var tokenString = _jwtToken.GenerateToken(userDB, DateTime.Now.AddMinutes(60));
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, CreateClaimsPrincipal(userDB.Username));
             _logger.Log($"Login user: {userDB.Username}");
-            return Ok(new { token = tokenString });
+            return RedirectToLocal(returnUrl);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Logout() {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login");
+        }
+
+        private IActionResult RedirectToLocal(string returnUrl) {
+            if (Url.IsLocalUrl(returnUrl)) {
+                return Redirect(returnUrl);
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        private ClaimsPrincipal CreateClaimsPrincipal(string name) {
+            var claims = new[] {
+                new Claim(ClaimTypes.Name, name)
+            };
+            var userIdentity = new ClaimsIdentity(claims, "login");
+            return new ClaimsPrincipal(userIdentity);
+        }
+
+        [AcceptVerbs("Get", "Post")]
         [AllowAnonymous]
-        public IActionResult TestApi(int id) {
-            return Json(id);
+        public async Task<IActionResult> IsEmailUnique(string email) {
+            var userDB = await _usersService.GetUserByEmail(email);
+            return Json(userDB == null);
         }
 
-        [Authorize]
-        public IActionResult TestJwt() {
-            var user = User.Identity as ClaimsIdentity;
-            
-            return Ok(User.Identity.Name);
+        [AcceptVerbs("Get", "Post")]
+        [AllowAnonymous]
+        public async Task<IActionResult> IsUserNameUnique(string username) {
+            var userDB = await _usersService.GetUser(username);
+            return Json(userDB == null);
+        }
+
+        public IActionResult Test(int id) {
+            return Json(id);
         }
     }
 }

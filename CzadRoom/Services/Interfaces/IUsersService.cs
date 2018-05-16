@@ -10,6 +10,7 @@ namespace CzadRoom.Services.Interfaces
     {
         Task<IEnumerable<User>> GetUsers();
         Task<User> GetUser(string username);
+        Task<User> GetUserByEmail(string email);
         Task Create(User user);
         Task<bool> Update(User user);
         Task<bool> Delete(string username);

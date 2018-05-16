@@ -7,8 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CzadRoom.Services
-{
+namespace CzadRoom.Services {
     public class UsersService : IUsersService {
 
         private readonly IMongoDbContext _context;
@@ -32,6 +31,11 @@ namespace CzadRoom.Services
             return await _context.Users.Find(filter).FirstOrDefaultAsync();
         }
 
+        public async Task<User> GetUserByEmail(string email) {
+            FilterDefinition<User> filter = Builders<User>.Filter.Eq(u => u.Email, email);
+            return await _context.Users.Find(filter).FirstOrDefaultAsync();
+        }
+
         public async Task<bool> Update(User user) {
             ReplaceOneResult updateResult = await _context.Users.ReplaceOneAsync(filter: u => u.Id == user.Id, replacement: user);
             return updateResult.IsAcknowledged && updateResult.ModifiedCount > 0;
@@ -40,5 +44,7 @@ namespace CzadRoom.Services
         public async Task<IEnumerable<User>> GetUsers() {
             return await _context.Users.Find(_ => true).ToListAsync();
         }
+
+
     }
 }
