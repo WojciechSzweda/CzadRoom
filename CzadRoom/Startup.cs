@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CzadRoom.Contexts;
+using CzadRoom.Hubs;
 using CzadRoom.Services;
 using CzadRoom.Services.Interfaces;
 using CzadRoom.Settings;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -45,7 +47,7 @@ namespace CzadRoom {
             }).AddCookie(options => {
                 options.AccessDeniedPath = new PathString("/Account/Login");
                 options.LoginPath = new PathString("/Account/Login");
-            }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme ,options => {
+            }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options => {
                 options.TokenValidationParameters = new TokenValidationParameters {
                     ValidateIssuer = true,
                     ValidateAudience = true,
@@ -56,13 +58,13 @@ namespace CzadRoom {
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                 };
             });
+            services.AddSignalR();
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-            public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
             if (env.IsDevelopment()) {
-                app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
             }
             else {
@@ -71,6 +73,10 @@ namespace CzadRoom {
 
             app.UseAuthentication();
             app.UseStaticFiles();
+
+            app.UseSignalR(routes => {
+                routes.MapHub<ChatHub>("/chatHub");
+            });
 
             app.UseMvc(routes => {
                 routes.MapRoute(
