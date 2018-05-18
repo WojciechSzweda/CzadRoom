@@ -9,10 +9,24 @@ connection.on("ReceiveMessage", (user, message) => {
     document.getElementById("messagesList").appendChild(li);
 });
 
+connection.on("ReceiveServerMessage", (message) => {
+    const encodedMsg = "server says " + message;
+    const li = document.createElement("li");
+    li.textContent = encodedMsg;
+    document.getElementById("messagesList").appendChild(li);
+});
+
 document.getElementById("sendButton").addEventListener("click", event => {
     const user = document.getElementById("userInput").value;
     const message = document.getElementById("messageInput").value;
     connection.invoke("SendMessage", user, message).catch(err => console.error(err.toString()));
+    event.preventDefault();
+});
+
+document.getElementById("sendButtonSelf").addEventListener("click", event => {
+    const user = document.getElementById("userInput").value;
+    const message = document.getElementById("messageInput").value;
+    connection.invoke("SendMessageToCaller", message).catch(err => console.error(err.toString()));
     event.preventDefault();
 });
 

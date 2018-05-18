@@ -8,13 +8,30 @@ namespace CzadRoom.Controllers
 {
     public class ChatController : Controller
     {
+
+        public ChatController() {
+
+        }
+
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult Room() {
+        //List of rooms, create room
+        public IActionResult Room(string roomId) {
             return View();
         }
+
+        public IActionResult CreateRoom() {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreateRoom(string name, string password) {
+
+            return View();
+        }
+
     }
 }

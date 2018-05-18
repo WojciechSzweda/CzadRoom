@@ -1,6 +1,6 @@
 using System;
 
-namespace CzadRoom.Models
+namespace CzadRoom.ViewModels
 {
     public class ErrorViewModel
     {
