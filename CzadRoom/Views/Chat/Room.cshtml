@@ -1,9 +1,11 @@
-﻿<div class="container">
+﻿@model RoomViewModel
+<div class="container">
     <div class="row">&nbsp;</div>
     <div class="row">
         <div class="col-6">&nbsp;</div>
         <div class="col-6">
-            User..........<input type="text" id="userInput" />
+            <input asp-for="RoomID" type="hidden" />
+            <label>@Model.Name</label>
             <br />
             Message...<input type="text" id="messageInput" />
             <input type="button" id="sendButton" value="Send Message" />

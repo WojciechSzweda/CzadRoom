@@ -15,5 +15,6 @@ namespace CzadRoom.Contexts
             _db = client.GetDatabase(options.Value.Database);
         }
         public IMongoCollection<User> Users => _db.GetCollection<User>("Users");
+        public IMongoCollection<Room> Rooms => _db.GetCollection<Room>("Rooms");
     }
 }

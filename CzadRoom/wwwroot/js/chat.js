@@ -17,9 +17,9 @@ connection.on("ReceiveServerMessage", (message) => {
 });
 
 document.getElementById("sendButton").addEventListener("click", event => {
-    const user = document.getElementById("userInput").value;
+    const roomID = document.getElementById("RoomID").value;
     const message = document.getElementById("messageInput").value;
-    connection.invoke("SendMessage", user, message).catch(err => console.error(err.toString()));
+    connection.invoke("SendRoomMessage", roomID, message).catch(err => console.error(err.toString()));
     event.preventDefault();
 });
 

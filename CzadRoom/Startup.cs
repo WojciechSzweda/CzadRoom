@@ -39,6 +39,7 @@ namespace CzadRoom {
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<ILogger, Logger>();
             services.AddTransient<IJwtToken, JwtTokenManager>();
+            services.AddTransient<IRoomService, RoomService>();
 
             services.AddAuthentication(options => {
                 options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
