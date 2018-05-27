@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using CzadRoom.Models;
 using Microsoft.AspNetCore.Authorization;
+using CzadRoom.ViewModels;
 
 namespace CzadRoom.Controllers
 {

@@ -26,7 +26,12 @@ namespace CzadRoom.Services {
             return deleteResult.IsAcknowledged && deleteResult.DeletedCount > 0;
         }
 
-        public async Task<User> GetUser(string username) {
+        public async Task<User> GetUser(string id) {
+            FilterDefinition<User> filter = Builders<User>.Filter.Eq(u => u.ID, id);
+            return await _context.Users.Find(filter).FirstOrDefaultAsync();
+        }
+
+        public async Task<User> GetUserByName(string username) {
             FilterDefinition<User> filter = Builders<User>.Filter.Eq(u => u.Username, username);
             return await _context.Users.Find(filter).FirstOrDefaultAsync();
         }
@@ -37,14 +42,13 @@ namespace CzadRoom.Services {
         }
 
         public async Task<bool> Update(User user) {
-            ReplaceOneResult updateResult = await _context.Users.ReplaceOneAsync(filter: u => u.Id == user.Id, replacement: user);
+            ReplaceOneResult updateResult = await _context.Users.ReplaceOneAsync(filter: u => u.ID == user.ID, replacement: user);
             return updateResult.IsAcknowledged && updateResult.ModifiedCount > 0;
         }
 
         public async Task<IEnumerable<User>> GetUsers() {
             return await _context.Users.Find(_ => true).ToListAsync();
         }
-
 
     }
 }

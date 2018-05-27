@@ -10,5 +10,6 @@ namespace CzadRoom.Contexts
     public interface IMongoDbContext
     {
         IMongoCollection<User> Users { get; }
+        IMongoCollection<Room> Rooms { get; }
     }
 }
