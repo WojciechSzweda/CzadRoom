@@ -15,11 +15,14 @@ namespace CzadRoom.Models {
         public DateTime CreationDate { get; set; }
 
         public string OwnerID { get; set; }
-        public List<User> UsersWithAccess { get; set; }
+        public HashSet<string> UsersIDWithAccess { get; set; }
+        public HashSet<string> CurrentUsersID { get; set; }
 
         public Room() {
             ID = Guid.NewGuid().ToString();
             CreationDate = DateTime.Now;
+            UsersIDWithAccess = new HashSet<string>();
+            CurrentUsersID = new HashSet<string>();
         }
     }
 }

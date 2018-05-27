@@ -50,6 +50,5 @@ namespace CzadRoom.Services {
             return await _context.Users.Find(_ => true).ToListAsync();
         }
 
-        
     }
 }

@@ -15,10 +15,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.RoomID)
+                @Html.DisplayNameFor(model => model.ID)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ClientCount)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.HasPassword)
@@ -30,10 +33,13 @@
         @foreach (var item in Model) {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.RoomID)
+                    @Html.DisplayFor(modelItem => item.ID)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClientCount)
                 </td>
                 <td>
                     @if (item.HasPassword) {
@@ -41,7 +47,7 @@
                     }
                 </td>
                 <td>
-                    @Html.ActionLink("Join", "JoinRoom", new { roomID = item.RoomID})
+                    @Html.ActionLink("Join", "JoinRoom", new { roomID = item.ID })
                     @*@Html.ActionLink("Join", "Room", new { roomId = item.RoomID })*@
                 </td>
             </tr>

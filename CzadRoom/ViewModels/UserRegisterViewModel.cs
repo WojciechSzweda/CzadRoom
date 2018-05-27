@@ -12,6 +12,7 @@ namespace CzadRoom.ViewModels {
         [Remote(action: "IsUsernameUnique", controller: "Account", ErrorMessage = "Username already taken")]
         public string Username { get; set; }
         [Required]
+        [EmailAddress]
         [Remote(action: "IsEmailUnique", controller: "Account", ErrorMessage = "Email already in use")]
         public string Email { get; set; }
         [Required]

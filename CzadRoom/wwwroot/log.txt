@@ -27,3 +27,7 @@
 @27.05.2018 11:10:10: Login user: Tester1
 @27.05.2018 15:02:42: Created user: Tester1
 @27.05.2018 15:02:47: Login user: Tester1
+@27.05.2018 17:17:54: Created user: Tester2
+@27.05.2018 18:03:14: Login user: Tester1
+@27.05.2018 18:04:20: Login user: Tester2
+@27.05.2018 18:34:46: Login user: Tester1

@@ -7,8 +7,9 @@ namespace CzadRoom.ViewModels
 {
     public class RoomViewModel
     {
-        public string RoomID { get; set; }
+        public string ID { get; set; }
         public string Name { get; set; }
+        public int ClientCount { get; set; }
         public bool HasPassword { get; set; }
     }
 }

@@ -50,5 +50,10 @@ document.getElementById("sendButton").addEventListener("click", event => {
     event.preventDefault();
 });
 
+window.onbeforeunload = () => {
+    const roomID = document.getElementById("RoomID").value;
+    connection.invoke("LeaveRoom", roomID).catch(err => console.error(err.toString()));
+    return
+}
 
 connection.start().catch(err => console.error(err.toString()));

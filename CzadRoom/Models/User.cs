@@ -17,9 +17,11 @@ namespace CzadRoom.Models
         public string Password { get; set; }
         public DateTime CreationDate { get; set; }
         public string Email { get; set; }
+        public HashSet<string> CurrentRoomsID { get; set; }
 
         public User() {
             CreationDate = DateTime.Now;
+            CurrentRoomsID = new HashSet<string>();
         }
     }
 }

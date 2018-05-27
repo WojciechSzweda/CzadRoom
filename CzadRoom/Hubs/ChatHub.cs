@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace CzadRoom.Hubs {
@@ -23,17 +24,21 @@ namespace CzadRoom.Hubs {
         }
 
         public Task SendRoomMessage(string roomId, string message) {
-            return Clients.Groups(roomId).SendAsync("ReceiveMessage", Context.User.Identity.Name, message, roomId);
+            if (_roomService.HasUserAccess(roomId, Context.User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                return Clients.Groups(roomId).SendAsync("ReceiveMessage", Context.User.Identity.Name, message, roomId);
+            else {
+                return Clients.Caller.SendAsync("ReceiveServerMessage", message);
+            }
         }
 
         public async Task JoinRoom(string roomId) {
-            //TODO: add user to room in db
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
             await Clients.Group(roomId).SendAsync("ClientJoined", Context.User.Identity.Name);
         }
 
         public async Task LeaveRoom(string roomId) {
-            //await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
+            var clientId = Context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
+            await _roomService.UserDisconnected(roomId, clientId);
             await Clients.Group(roomId).SendAsync("ClientLeft", Context.User.Identity.Name);
         }
 
