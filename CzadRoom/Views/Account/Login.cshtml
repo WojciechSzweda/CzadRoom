@@ -9,6 +9,12 @@
 <h4>UserLoginViewModel</h4>
 <hr />
 <div class="row">
+    @if (ViewData["Error"] != null) {
+        <div class="login-error">
+            <p>Wrong login or password</p>
+        </div>
+        <br/>
+    }
     <div class="col-md-4">
         <form asp-action="Login">
             <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />

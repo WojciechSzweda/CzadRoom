@@ -41,15 +41,14 @@ connection.on("Connected", () => {
 document.getElementById("sendButton").addEventListener("click", event => {
     const roomID = document.getElementById("RoomID").value;
     const message = document.getElementById("messageInput").value;
-    connection.invoke("SendRoomMessage", roomID, message).catch(err => console.error(err.toString()));
+    if (message.length > 0) {
+        if (message[0] === '/')
+            connection.invoke("SendMessageToCaller", message).catch(err => console.error(err.toString()));
+        else
+            connection.invoke("SendRoomMessage", roomID, message).catch(err => console.error(err.toString()));
+    }
     event.preventDefault();
 });
 
-document.getElementById("sendButtonSelf").addEventListener("click", event => {
-    const user = document.getElementById("userInput").value;
-    const message = document.getElementById("messageInput").value;
-    connection.invoke("SendMessageToCaller", message).catch(err => console.error(err.toString()));
-    event.preventDefault();
-});
 
 connection.start().catch(err => console.error(err.toString()));

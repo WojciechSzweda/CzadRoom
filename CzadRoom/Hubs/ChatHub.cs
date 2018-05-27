@@ -33,7 +33,7 @@ namespace CzadRoom.Hubs {
         }
 
         public async Task LeaveRoom(string roomId) {
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
+            //await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomId);
             await Clients.Group(roomId).SendAsync("ClientLeft", Context.User.Identity.Name);
         }
 

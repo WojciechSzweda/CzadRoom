@@ -40,7 +40,7 @@ namespace CzadRoom.Controllers
         [HttpGet, JwtAuthorize]
         [Route("Get")]
         public async Task<IActionResult> Get(string name) {
-            var user = await _usersService.GetUser(name);
+            var user = await _usersService.GetUserByName(name);
             if (user == null)
                 return new NotFoundResult();
             return new ObjectResult(user);
@@ -51,10 +51,10 @@ namespace CzadRoom.Controllers
         public async Task<IActionResult> Update(string username, [FromBody]User user) {
             if (User.Identity.Name != username)
                 return Unauthorized();
-            var userDB = await _usersService.GetUser(username);
+            var userDB = await _usersService.GetUserByName(username);
             if (userDB == null)
                 return new NotFoundResult();
-            user.Id = userDB.Id;
+            user.ID = userDB.ID;
             await _usersService.Update(user);
             _logger.Log($"Updated user: {userDB.Username}");
             return new OkObjectResult(user);
@@ -65,7 +65,7 @@ namespace CzadRoom.Controllers
         public async Task<IActionResult> Delete(string username) {
             if (User.Identity.Name != username)
                 return Unauthorized();
-            var userDB = await _usersService.GetUser(username);
+            var userDB = await _usersService.GetUserByName(username);
             if (userDB == null)
                 return Json($"{username} doesnt exists");
             await _usersService.Delete(username);
@@ -84,7 +84,7 @@ namespace CzadRoom.Controllers
         [HttpPost]
         [Route("CreateToken")]
         public async Task<IActionResult> CreateToken([FromBody]UserLoginViewModel user) {
-            var userDB = await _usersService.GetUser(user.Username);
+            var userDB = await _usersService.GetUserByName(user.Username);
             if (userDB == null)
                 return View();
             if (!BCrypt.Net.BCrypt.Verify(user.Password, userDB.Password)) {

@@ -37,7 +37,7 @@ namespace CzadRoom.Controllers {
             if (!ModelState.IsValid) {
                 return View();
             }
-            var userDB = await _usersService.GetUser(userVM.Username);
+            var userDB = await _usersService.GetUserByName(userVM.Username);
             if (userDB != null) {
                 ViewData["Error"] = "Username already taken";
                 return View();
@@ -69,13 +69,15 @@ namespace CzadRoom.Controllers {
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(UserLoginViewModel user, string returnUrl = null) {
 
-            var userDB = await _usersService.GetUser(user.Username);
-            if (userDB == null)
+            var userDB = await _usersService.GetUserByName(user.Username);
+            if (userDB == null) {
+                ViewData["Error"] = true;
                 return View();
+            }
             if (!BCrypt.Net.BCrypt.Verify(user.Password, userDB.Password)) {
                 return Json("password mismatch");
             }
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, CreateClaimsPrincipal(userDB.Username));
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, CreateClaimsPrincipal(userDB));
             _logger.Log($"Login user: {userDB.Username}");
             return RedirectToLocal(returnUrl);
         }
@@ -94,9 +96,10 @@ namespace CzadRoom.Controllers {
             return RedirectToAction("Index", "Home");
         }
 
-        private ClaimsPrincipal CreateClaimsPrincipal(string name) {
+        private ClaimsPrincipal CreateClaimsPrincipal(User user) {
             var claims = new[] {
-                new Claim(ClaimTypes.Name, name)
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.NameIdentifier, user.ID)
             };
             var userIdentity = new ClaimsIdentity(claims, "login");
             return new ClaimsPrincipal(userIdentity);
@@ -112,7 +115,7 @@ namespace CzadRoom.Controllers {
         [AcceptVerbs("Get", "Post")]
         [AllowAnonymous]
         public async Task<IActionResult> IsUserNameUnique(string username) {
-            var userDB = await _usersService.GetUser(username);
+            var userDB = await _usersService.GetUserByName(username);
             return Json(userDB == null);
         }
 
