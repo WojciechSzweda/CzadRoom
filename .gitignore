@@ -75,5 +75,6 @@ _[Ss]cripts
 *.dot[Cc]over
 
 .vs
-
+.vscode
 node_modules
+*.txt
