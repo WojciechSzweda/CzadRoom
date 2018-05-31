@@ -11,5 +11,6 @@ namespace CzadRoom.Contexts
     {
         IMongoCollection<User> Users { get; }
         IMongoCollection<Room> Rooms { get; }
+        IMongoCollection<RoomConnection> Connections { get; }
     }
 }

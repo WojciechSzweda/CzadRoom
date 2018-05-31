@@ -40,13 +40,15 @@ connection.on("Connected", () => {
 
 document.getElementById("sendButton").addEventListener("click", event => {
     const roomID = document.getElementById("RoomID").value;
-    const message = document.getElementById("messageInput").value;
+    const input = document.getElementById("messageInput")
+    const message = input.value;
     if (message.length > 0) {
         if (message[0] === '/')
-            connection.invoke("SendMessageToCaller", message).catch(err => console.error(err.toString()));
+            connection.invoke("SendCommand", message.substring(1)).catch(err => console.error(err.toString()));
         else
             connection.invoke("SendRoomMessage", roomID, message).catch(err => console.error(err.toString()));
     }
+    input.value = ""
     event.preventDefault();
 });
 
@@ -54,6 +56,11 @@ window.onbeforeunload = () => {
     const roomID = document.getElementById("RoomID").value;
     connection.invoke("LeaveRoom", roomID).catch(err => console.error(err.toString()));
     return
+}
+
+document.onkeyup = (key) => {
+    if (key.keyCode === 13)
+        document.getElementById("sendButton").click()
 }
 
 connection.start().catch(err => console.error(err.toString()));

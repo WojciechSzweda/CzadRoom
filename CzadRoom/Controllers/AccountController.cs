@@ -55,7 +55,7 @@ namespace CzadRoom.Controllers {
             var user = _mapper.Map<User>(userVM);
             user.Password = BCrypt.Net.BCrypt.HashPassword(userVM.Password, BCrypt.Net.BCrypt.GenerateSalt());
             await _usersService.Create(user);
-            _logger.Log($"Created user: {user.Username}");
+            await _logger.Log($"Created user: {user.Username}");
             return RedirectToAction("Login");
         }
 
@@ -81,7 +81,7 @@ namespace CzadRoom.Controllers {
                 return Json("password mismatch");
             }
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, CreateClaimsPrincipal(userDB));
-            _logger.Log($"Login user: {userDB.Username}");
+            await _logger.Log($"Login user: {userDB.Username}");
             return RedirectToLocal(returnUrl);
         }
 

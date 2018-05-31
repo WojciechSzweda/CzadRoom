@@ -16,5 +16,6 @@ namespace CzadRoom.Contexts
         }
         public IMongoCollection<User> Users => _db.GetCollection<User>("Users");
         public IMongoCollection<Room> Rooms => _db.GetCollection<Room>("Rooms");
+        public IMongoCollection<RoomConnection> Connections => _db.GetCollection<RoomConnection>("Connections");
     }
 }

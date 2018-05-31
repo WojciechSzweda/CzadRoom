@@ -13,7 +13,7 @@ namespace CzadRoom.MapperProfiles
         public RoomViewModelProfile() {
             CreateMap<Room, RoomViewModel>()
                 .ForMember(dest => dest.HasPassword, output => output.MapFrom(src => !string.IsNullOrEmpty(src.Password)))
-                .ForMember(dest => dest.ClientCount, output => output.MapFrom(src => src.CurrentUsersID.Count()));
+                .ForMember(dest => dest.ClientCount, output => output.Ignore());
         }
     }
 }

@@ -15,11 +15,11 @@ namespace CzadRoom.Services
             _hostingEnvironment = hostingEnvironment;
         }
 
-        public void Log(string message) {
+        public async Task Log(string message) {
             if (!File.Exists(Path.Combine(_hostingEnvironment.WebRootPath, "log.txt"))) {
                 File.Create(Path.Combine(_hostingEnvironment.WebRootPath, "log.txt"));
             }
-            File.AppendAllTextAsync(Path.Combine(_hostingEnvironment.WebRootPath, "log.txt"), $"@{DateTime.Now}: {message}{Environment.NewLine}");
+            await File.AppendAllTextAsync(Path.Combine(_hostingEnvironment.WebRootPath, "log.txt"), $"@{DateTime.Now}: {message}{Environment.NewLine}");
         }
     }
 }

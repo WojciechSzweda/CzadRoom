@@ -1,20 +1,18 @@
 ﻿@model RoomViewModel
 <div class="container">
-    <div class="row">&nbsp;</div>
     <div class="row">
-        <div class="col-6">&nbsp;</div>
-        <div class="col-6">
-            <input asp-for="ID" type="hidden" id="RoomID"/>
+        <div class="col-xs-12">&nbsp;</div>
+        <div class="col-xs-10">
+            <input asp-for="ID" type="hidden" id="RoomID" />
             <label>@Model.Name</label>
             <br />
             Message...<input type="text" id="messageInput" />
             <input type="button" id="sendButton" value="Send Message" />
-            <input type="button" id="sendButtonSelf" value="Send Message Self" />
         </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <hr />
+        <div class="col-xs-2">
+            <label>Clients:</label>
+            <ul>
+            </ul>
         </div>
     </div>
     <div class="row">

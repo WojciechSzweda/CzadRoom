@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace CzadRoom.Services.Interfaces
 {
-    public interface ILogger
+    public interface IServerCommands
     {
-        Task Log(string message);
+        string ExecuteCommand(string command);
     }
 }

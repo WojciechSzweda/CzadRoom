@@ -56,7 +56,7 @@ namespace CzadRoom.Controllers
                 return new NotFoundResult();
             user.ID = userDB.ID;
             await _usersService.Update(user);
-            _logger.Log($"Updated user: {userDB.Username}");
+            await _logger.Log($"Updated user: {userDB.Username}");
             return new OkObjectResult(user);
         }
 
@@ -69,7 +69,7 @@ namespace CzadRoom.Controllers
             if (userDB == null)
                 return Json($"{username} doesnt exists");
             await _usersService.Delete(username);
-            _logger.Log($"Deleted user: {userDB.Username}");
+            await _logger.Log($"Deleted user: {userDB.Username}");
             return new OkResult();
         }
 
