@@ -22,11 +22,13 @@ namespace CzadRoom.Controllers {
         private readonly IUsersService _usersService;
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
+        private readonly IFileManager _fileManager;
 
-        public AccountController(IUsersService usersService, ILogger logger, IMapper mapper) {
+        public AccountController(IUsersService usersService, ILogger logger, IMapper mapper, IFileManager fileManager) {
             _usersService = usersService;
             _logger = logger;
             _mapper = mapper;
+            _fileManager = fileManager;
         }
 
         [HttpGet]
@@ -51,9 +53,14 @@ namespace CzadRoom.Controllers {
                 ViewData["Error"] = "Email already in use";
                 return View();
             }
+            var uploadedResult = _fileManager.UploadImage(userVM.Avatar, userVM.Username);
             //TODO: nickname creator
             var user = _mapper.Map<User>(userVM);
             user.Password = BCrypt.Net.BCrypt.HashPassword(userVM.Password, BCrypt.Net.BCrypt.GenerateSalt());
+            if (uploadedResult.ok)
+                user.AvatarName = uploadedResult.fileName;
+            else
+                user.AvatarName = _fileManager.GetImagePath("defaultAvatar.png");
             await _usersService.Create(user);
             await _logger.Log($"Created user: {user.Username}");
             return RedirectToAction("Login");

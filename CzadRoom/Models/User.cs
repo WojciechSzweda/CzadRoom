@@ -18,6 +18,7 @@ namespace CzadRoom.Models
         public DateTime CreationDate { get; set; }
         public string Email { get; set; }
         public HashSet<string> CurrentRoomsID { get; set; }
+        public string AvatarName { get; set; }
 
         public User() {
             CreationDate = DateTime.Now;

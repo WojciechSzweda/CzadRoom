@@ -55,7 +55,7 @@ namespace CzadRoom.Services {
 
         public bool HasUserAccess(string roomId, string userId) {
             var room = _context.Rooms.Find(x => x.ID == roomId).FirstOrDefault();
-            return room.UsersIDWithAccess.Contains(userId) || room.OwnerID == userId;
+            return room.UsersIDWithAccess.Contains(userId) || room.OwnerID == userId || string.IsNullOrEmpty(room.Password);
         }
 
         public async Task UserConnected(RoomConnection roomConnection) {

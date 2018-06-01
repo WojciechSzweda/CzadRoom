@@ -11,5 +11,7 @@ namespace CzadRoom.ViewModels
         public string Name { get; set; }
         public int ClientCount { get; set; }
         public bool HasPassword { get; set; }
+        public IEnumerable<UserViewModel> UsersInRoom { get; set; }
+
     }
 }

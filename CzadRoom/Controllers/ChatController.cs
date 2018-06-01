@@ -34,8 +34,10 @@ namespace CzadRoom.Controllers {
             var roomDB = await _roomService.GetRoom(roomId);
             if (string.IsNullOrEmpty(roomDB.Password))
                 return RedirectToAction("Room", new { roomId = roomDB.ID });
+
             if (roomDB.OwnerID == GetUserIdFromHttpContext())
                 return RedirectToAction("Room", new { roomId = roomDB.ID });
+
             if (roomDB.UsersIDWithAccess.Contains(GetUserIdFromHttpContext()))
                 return RedirectToAction("Room", new { roomId = roomDB.ID });
             var room = new RoomJoinViewModel { Name = roomDB.Name, ID = roomDB.ID };
@@ -58,7 +60,11 @@ namespace CzadRoom.Controllers {
             if (!_roomService.HasUserAccess(roomId, userID))
                 return RedirectToAction("JoinRoom", new { roomId });
             var roomDB = await _roomService.GetRoom(roomId);
-            var room = _mapper.Map<Room, RoomViewModel>(roomDB);
+            var users = await _roomService.ConnectedUsers(roomId);
+            var room = _mapper.Map<Room, RoomViewModel>(roomDB, opt =>
+            opt.AfterMap((src, dest) => dest.UsersInRoom =
+            (users.ToList().Select(x => _mapper.Map<UserViewModel>(x)) ?? new List<UserViewModel>()
+            )));
             return View(room);
         }
 

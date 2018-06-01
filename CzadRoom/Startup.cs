@@ -42,6 +42,7 @@ namespace CzadRoom {
             services.AddTransient<ILogger, Logger>();
             services.AddTransient<IJwtToken, JwtTokenManager>();
             services.AddTransient<IRoomService, RoomService>();
+            services.AddTransient<IFileManager, FileManager>();
             services.AddSingleton<IServerCommands, ServerCommands>();
 
             services.AddAuthentication(options => {
@@ -51,6 +52,7 @@ namespace CzadRoom {
             }).AddCookie(options => {
                 options.AccessDeniedPath = new PathString("/Account/Login");
                 options.LoginPath = new PathString("/Account/Login");
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
             }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options => {
                 options.TokenValidationParameters = new TokenValidationParameters {
                     ValidateIssuer = true,

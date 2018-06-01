@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 namespace CzadRoom.MapperProfiles {
     public class RegisterUserProfile : Profile {
         public RegisterUserProfile() {
-            CreateMap<UserRegisterViewModel, User>();
+            CreateMap<UserRegisterViewModel, User>()
+                .ForMember(dest => dest.AvatarName, output => output.Ignore());
         }
     }
 }

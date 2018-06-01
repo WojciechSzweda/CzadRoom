@@ -12,6 +12,9 @@
         <div class="col-xs-2">
             <label>Clients:</label>
             <ul>
+                @foreach (var user in Model.UsersInRoom) {
+                    <li>@user.Username</li>
+                }
             </ul>
         </div>
     </div>
