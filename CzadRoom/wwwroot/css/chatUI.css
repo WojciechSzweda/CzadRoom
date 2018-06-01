@@ -1,0 +1,54 @@
+﻿div {
+    border: 1px solid black;
+}
+
+.chat-main {
+    max-height: 90vh;
+}
+
+.chat-room-info {
+    height: 5vh;
+    overflow:hidden;
+}
+
+.chat-room-info h2 {
+    margin: 0;
+}
+
+
+#messagesList {
+    overflow: scroll;
+    overflow-x: hidden;
+    max-height: 100%;
+    list-style-type: none;
+}
+
+.message-textbox {
+    height: 10vh;
+}
+
+.message-list-box {
+    height: 65vh;
+}
+
+#messageInput {
+    margin: 0;
+    padding: 0;
+    height: 90%;
+    font-family: 'Comic Sans MS';
+    font-size: 2.5rem;
+    text-align:start;
+    resize: none;
+}
+
+#btnSendMsg {
+    height: 100%;
+}
+
+
+/*
+    messageInput
+    sendButton
+    messagesList
+    usersInRoom
+*/

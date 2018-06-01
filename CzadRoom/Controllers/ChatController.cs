@@ -63,7 +63,7 @@ namespace CzadRoom.Controllers {
             var users = await _roomService.ConnectedUsers(roomId);
             var room = _mapper.Map<Room, RoomViewModel>(roomDB, opt =>
             opt.AfterMap((src, dest) => dest.UsersInRoom =
-            (users.ToList().Select(x => _mapper.Map<UserViewModel>(x)) ?? new List<UserViewModel>()
+            (users.ToList().Where(x => x.ID != userID).Select(x => _mapper.Map<UserViewModel>(x)) ?? new List<UserViewModel>()
             )));
             return View(room);
         }
@@ -89,6 +89,7 @@ namespace CzadRoom.Controllers {
         public string GetUserIdFromHttpContext() {
             return HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
         }
+
 
     }
 }
