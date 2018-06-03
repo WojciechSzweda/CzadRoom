@@ -21,11 +21,20 @@ namespace CzadRoom.Services
         }
 
         public IEnumerable<ChatMessage> GetChatMessages(string roomId, int count) {
-           return _mongoDbContext.ChatMessages.AsQueryable().Where(x => x.RoomID == roomId).OrderBy(x => x.Date).Take(count);
+           return _mongoDbContext.ChatMessages.AsQueryable()
+                .Where(x => x.RoomID == roomId)
+                .OrderByDescending(x => x.Date)
+                .Take(count)
+                .OrderBy(x => x.Date);
         }
 
         public IEnumerable<ChatMessage> GetChatMessages(string roomId, DateTime dateTime, int count) {
-            return _mongoDbContext.ChatMessages.AsQueryable().Where(x => x.RoomID == roomId).OrderBy(x => x.Date).Where(x => x.Date < dateTime).Take(count);
+            return _mongoDbContext.ChatMessages.AsQueryable()
+                .Where(x => x.RoomID == roomId)
+                .OrderByDescending(x => x.Date)
+                .Where(x => x.Date < dateTime)
+                .Take(count)
+                .OrderBy(x => x.Date);
         }
     }
 }
