@@ -17,11 +17,13 @@ namespace CzadRoom.Controllers {
         private readonly IRoomService _roomService;
         private readonly IUsersService _usersService;
         private readonly IMapper _mapper;
+        private readonly IChatMessageService _chatMessageService;
 
-        public ChatController(IRoomService roomService, IUsersService usersService, IMapper mapper) {
+        public ChatController(IRoomService roomService, IUsersService usersService, IMapper mapper, IChatMessageService chatMessageService) {
             _roomService = roomService;
             _usersService = usersService;
             _mapper = mapper;
+            _chatMessageService = chatMessageService;
         }
 
         public async Task<IActionResult> Index() {
@@ -89,6 +91,19 @@ namespace CzadRoom.Controllers {
             return HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
         }
 
+        public struct MsgPost {
+            public string roomId { get; set; }
+            public int count { get; set; }
+            public DateTime date { get; set; }
+        }
 
+        [HttpPost]
+        public IActionResult GetMessages([FromBody]MsgPost body) {
+            var userId = GetUserIdFromHttpContext();
+            if (!_roomService.HasUserAccess(body.roomId, userId))
+                return Unauthorized();
+            var chatMessages = _chatMessageService.GetChatMessages(body.roomId, body.count).ToList();
+            return Json(chatMessages);
+        }
     }
 }

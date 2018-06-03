@@ -44,6 +44,7 @@ namespace CzadRoom {
             services.AddTransient<IRoomService, RoomService>();
             services.AddTransient<IFileManager, FileManager>();
             services.AddSingleton<IServerCommands, ServerCommands>();
+            services.AddTransient<IChatMessageService, ChatMessageService>();
 
             services.AddAuthentication(options => {
                 options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;

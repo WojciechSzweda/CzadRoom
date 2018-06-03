@@ -14,10 +14,12 @@ namespace CzadRoom.Hubs {
     public class ChatHub : Hub {
         private readonly IRoomService _roomService;
         private readonly IServerCommands _serverCommands;
+        private readonly IChatMessageService _chatMessageService;
 
-        public ChatHub(IRoomService roomService, IServerCommands serverCommands) {
+        public ChatHub(IRoomService roomService, IServerCommands serverCommands, IChatMessageService chatMessageService) {
             _roomService = roomService;
             _serverCommands = serverCommands;
+            _chatMessageService = chatMessageService;
         }
 
         public async Task SendMessage(string message) {
@@ -29,8 +31,12 @@ namespace CzadRoom.Hubs {
         }
 
         public Task SendRoomMessage(string roomId, string message) {
-            if (_roomService.HasUserAccess(roomId, Context.User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            var userId = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            if (_roomService.HasUserAccess(roomId, userId)) {
+                var msg = new ChatMessage { Content = message, RoomID = roomId, UserID = userId,Username = Context.User.Identity.Name };
+                _chatMessageService.AddMessage(msg);
                 return Clients.Groups(roomId).SendAsync("ReceiveMessage", Context.User.Identity.Name, message, roomId);
+            }
             else {
                 return Clients.Caller.SendAsync("ReceiveServerMessage", message);
             }

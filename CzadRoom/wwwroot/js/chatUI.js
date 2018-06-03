@@ -1,8 +1,8 @@
-﻿function generateMessageHTML(user, message) {
+﻿function generateMessageHTML(user, message, date) {
     let li = `<li class="msg-li">
         <div class="message">
             <div class="message-client">
-                <p>${user}<span class="message-date">${formatDate(new Date())}</span></p>
+                <p>${user}<span class="message-date">${date === undefined ? formatDate(new Date()) : formatDate(new Date(Date.parse(date)))}</span></p>
             </div>
             <div class="message-content">
                 <p>${message}</p>
@@ -12,8 +12,8 @@
     return li
 }
 
-function generateMessageLiNode(user, message) {
-    return stringToHtmlNode(generateMessageHTML(user,message))
+function generateMessageLiNode(user, message, date) {
+    return stringToHtmlNode(generateMessageHTML(user, message, date))
 }
 
 function generateServerMessageHTML(message) {
@@ -30,7 +30,7 @@ function generateServerMessageLiNode(message) {
 }
 
 function formatDate(date) {
-    return `${date.getHours()}:${date.getMinutes() < 10 ? '0' : ''}${date.getMinutes()}`
+    return `@${date.getHours()}:${date.getMinutes() < 10 ? '0' : ''}${date.getMinutes()} - ${('0' + date.getDate()).slice(-2)}.${('0' + date.getMonth()).slice(-2)}`
 }
 
 function stringToHtmlNode(html) {
@@ -44,4 +44,16 @@ function generateClientSidebarLi(client) {
     clientLi.innerText = client
     clientLi.setAttribute('id', `li-${client}`)
     return clientLi
+}
+
+function appendNewMessage(user, message, date) {
+    const li = generateMessageLiNode(user, message, date)
+    const msgList = document.getElementById("messagesList")
+    msgList.appendChild(li);
+    msgList.scrollTo(0, msgList.scrollHeight)
+}
+
+function appendNewServerMessage(message) {
+    const li = generateServerMessageLiNode(message)
+    document.getElementById("messagesList").appendChild(li)
 }

@@ -4,37 +4,32 @@
 
 
 connection.on("ReceiveMessage", (user, message, roomId) => {
-    const li = generateMessageLiNode(user, message)
-    const msgList = document.getElementById("messagesList")
-    msgList.appendChild(li);
-    msgList.scrollTo(0, msgList.scrollHeight)
+    appendNewMessage(user,message)
 });
 
 connection.on("ReceiveServerMessage", (message) => {
-    const li = generateServerMessageLiNode(message)
-    document.getElementById("messagesList").appendChild(li);
+    appendNewServerMessage(message)
 });
 
 connection.on("ClientJoined", (client) => {
     if (document.getElementById(`li-${client}`) !== null)
         return
     const msg = `${client} has joined`
-    const li = generateServerMessageLiNode(msg)
-    document.getElementById("messagesList").appendChild(li)
+    appendNewServerMessage(msg)
     const clientLi = generateClientSidebarLi(client)
     document.getElementById(`usersInRoom`).appendChild(clientLi)
 })
 
 connection.on("ClientLeft", (client) => {
     const msg = `${client} has left`
-    const li = generateServerMessageLiNode(msg)
-    document.getElementById("messagesList").appendChild(li)
+    appendNewServerMessage(msg)
     document.getElementById(`li-${client}`).remove()
 })
 
 connection.on("Connected", () => {
     const roomID = document.getElementById("RoomID").value
     connection.invoke("JoinRoom", roomID).catch(err => console.error(err.toString()))
+    getMessages()
     console.log(`Joined room ${roomID}`)
 })
 
@@ -63,3 +58,16 @@ function sendMessage() {
     }
     input.value = ""
 }
+
+async function getMessages() {
+    const roomID = document.getElementById("RoomID").value;
+    let response = await fetch('./GetMessages', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ roomID, count: 10 })
+    })
+    let data = await response.json()
+    data.forEach(x => appendNewMessage(x.username, x.content, x.date))
+}
+
