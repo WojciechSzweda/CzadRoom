@@ -20,13 +20,11 @@ using Microsoft.IdentityModel.Tokens;
 namespace CzadRoom.Controllers {
     public class AccountController : Controller {
         private readonly IUsersService _usersService;
-        private readonly ILogger _logger;
         private readonly IMapper _mapper;
         private readonly IFileManager _fileManager;
 
-        public AccountController(IUsersService usersService, ILogger logger, IMapper mapper, IFileManager fileManager) {
+        public AccountController(IUsersService usersService, IMapper mapper, IFileManager fileManager) {
             _usersService = usersService;
-            _logger = logger;
             _mapper = mapper;
             _fileManager = fileManager;
         }
@@ -62,7 +60,6 @@ namespace CzadRoom.Controllers {
             else
                 user.AvatarName = _fileManager.GetImagePath("defaultAvatar.png");
             await _usersService.Create(user);
-            await _logger.Log($"Created user: {user.Username}");
             return RedirectToAction("Login");
         }
 
@@ -88,7 +85,6 @@ namespace CzadRoom.Controllers {
                 return Json("password mismatch");
             }
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, CreateClaimsPrincipal(userDB));
-            await _logger.Log($"Login user: {userDB.Username}");
             return RedirectToLocal(returnUrl);
         }
 

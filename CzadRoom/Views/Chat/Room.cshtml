@@ -6,15 +6,21 @@
         <div class="chat-room-info">
             <h2>@Model.Name</h2>
         </div>
-        <div class="col-md-10 message-list-box">
-            <ul id="messagesList"></ul>
+        <div class="col-md-11 col-sm-10 message-list-box">
+            <ul id="messagesList">
+            </ul>
         </div>
-        <div class="col-md-2 sidebar-users">
-            <ul id="usersInRoom"></ul>
+        <div class="col-md-1 col-sm-2 sidebar-users">
+            <ul id="usersInRoom">
+            </ul>
         </div>
         <div class="col-md-12 message-textbox">
-            <textarea type="text" id="messageInput" rows="4" class="col-md-10"></textarea>
-            <button class="btn btn-primary col-md-2" id="btnSendMsg">Send</button>
+            <textarea type="text" id="messageInput" rows="4" class="col-xs-10"></textarea>
+            <div class="col-xs-2 btn-holder">
+            <button class="btn" id="btnSendMsg">
+                <span class="button-sendMsg-text">Send</span>
+            </button>
+            </div>
         </div>
     </div>
 
