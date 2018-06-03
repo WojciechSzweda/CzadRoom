@@ -12,6 +12,9 @@
         </div>
         <div class="col-md-1 col-sm-2 sidebar-users">
             <ul id="usersInRoom">
+                @foreach (var user in Model.UsersInRoom) {
+                    <li id="li-@user.Username">@user.Username</li>
+                }
             </ul>
         </div>
         <div class="col-md-12 message-textbox">

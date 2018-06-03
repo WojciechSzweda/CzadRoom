@@ -101,6 +101,7 @@ font-family: 'Roboto Slab', serif;*/
     .sidebar-users ul {
         list-style-type: circle;
         -webkit-padding-start: 0px;
+        padding-left: 2px;
         font-family: 'Roboto Slab', serif;
         font-weight: 700;
     }

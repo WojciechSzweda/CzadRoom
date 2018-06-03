@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using CzadRoom.Comparers;
 using CzadRoom.Models;
 using CzadRoom.Services.Interfaces;
 using CzadRoom.ViewModels;
@@ -25,7 +26,7 @@ namespace CzadRoom.Controllers {
 
         public async Task<IActionResult> Index() {
             var rooms = (await _roomService.GetAll()).Select(x => _mapper.Map<Room, RoomViewModel>(x, opt =>
-            opt.AfterMap(async (src, dest) => dest.ClientCount = await _roomService.ConnectedUsersCount(src.ID))));
+            opt.AfterMap(async (src, dest) => dest.ClientCount = (await _roomService.ConnectedUsers(src.ID)).Distinct(new UserComparer()).Count())));
             return View(rooms);
         }
 
@@ -60,11 +61,9 @@ namespace CzadRoom.Controllers {
             if (!_roomService.HasUserAccess(roomId, userID))
                 return RedirectToAction("JoinRoom", new { roomId });
             var roomDB = await _roomService.GetRoom(roomId);
-            var users = await _roomService.ConnectedUsers(roomId);
+            var users = (await _roomService.ConnectedUsers(roomId)).Distinct(new UserComparer());
             var room = _mapper.Map<Room, RoomViewModel>(roomDB, opt =>
-            opt.AfterMap((src, dest) => dest.UsersInRoom =
-            (users.ToList().Where(x => x.ID != userID).Select(x => _mapper.Map<UserViewModel>(x)) ?? new List<UserViewModel>()
-            )));
+                 opt.AfterMap((src, dest) => dest.UsersInRoom = users.Where(x => x.ID != userID).Select(x => _mapper.Map<UserViewModel>(x))));
             return View(room);
         }
 

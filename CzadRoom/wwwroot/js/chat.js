@@ -4,9 +4,6 @@
 
 
 connection.on("ReceiveMessage", (user, message, roomId) => {
-    //const encodedMsg = user + " says " + message;
-    //const li = document.createElement("li");
-    //li.textContent = encodedMsg;
     const li = generateMessageLiNode(user, message)
     const msgList = document.getElementById("messagesList")
     msgList.appendChild(li);
@@ -19,6 +16,8 @@ connection.on("ReceiveServerMessage", (message) => {
 });
 
 connection.on("ClientJoined", (client) => {
+    if (document.getElementById(`li-${client}`) !== null)
+        return
     const msg = `${client} has joined`
     const li = generateServerMessageLiNode(msg)
     document.getElementById("messagesList").appendChild(li)
@@ -28,7 +27,7 @@ connection.on("ClientJoined", (client) => {
 
 connection.on("ClientLeft", (client) => {
     const msg = `${client} has left`
-    const li = generateServerMessageHTML(msg)
+    const li = generateServerMessageLiNode(msg)
     document.getElementById("messagesList").appendChild(li)
     document.getElementById(`li-${client}`).remove()
 })
@@ -44,12 +43,6 @@ document.getElementById("btnSendMsg").addEventListener("click", event => {
     sendMessage()
     event.preventDefault()
 });
-
-window.onbeforeunload = () => {
-    const roomID = document.getElementById("RoomID").value;
-    connection.invoke("LeaveRoom", roomID).catch(err => console.error(err.toString()));
-    return
-}
 
 document.onkeyup = (key) => {
     if (key.keyCode === 13)

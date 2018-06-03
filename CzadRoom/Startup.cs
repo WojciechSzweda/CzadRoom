@@ -69,7 +69,7 @@ namespace CzadRoom {
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider, IApplicationLifetime applicationLifetime) {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             }
@@ -89,6 +89,9 @@ namespace CzadRoom {
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            var roomService = serviceProvider.GetService<IRoomService>();
+            applicationLifetime.ApplicationStarted.Register(async () => await roomService.RemoveAllConnections());
 
         }
     }
