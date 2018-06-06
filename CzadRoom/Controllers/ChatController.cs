@@ -50,6 +50,10 @@ namespace CzadRoom.Controllers {
         [HttpPost]
         public async Task<IActionResult> JoinRoom(RoomJoinViewModel roomJoin) {
             var roomDB = await _roomService.GetRoom(roomJoin.ID);
+            if (!ModelState.IsValid)
+                return View(roomJoin);
+            if (!string.IsNullOrEmpty(roomDB.Password) && string.IsNullOrEmpty(roomJoin.Password))
+                return View(roomJoin);
             if (!BCrypt.Net.BCrypt.Verify(roomJoin.Password, roomDB.Password)) {
                 return RedirectToAction("Index");
             }

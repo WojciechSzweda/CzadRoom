@@ -27,3 +27,7 @@
 </div>
 
 <a asp-action="Index">Back</a>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
