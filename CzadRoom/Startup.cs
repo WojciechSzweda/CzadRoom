@@ -43,8 +43,10 @@ namespace CzadRoom {
             services.AddTransient<IJwtToken, JwtTokenManager>();
             services.AddTransient<IRoomService, RoomService>();
             services.AddTransient<IFileManager, FileManager>();
-            services.AddSingleton<IServerCommands, ServerCommands>();
             services.AddTransient<IChatMessageService, ChatMessageService>();
+
+            services.AddSingleton<IServerCommands, ServerCommands>();
+            services.AddSingleton<IConnectionService, ConnectionService>();
 
             services.AddAuthentication(options => {
                 options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -70,7 +72,7 @@ namespace CzadRoom {
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider, IApplicationLifetime applicationLifetime) {
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env) {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
             }
@@ -90,10 +92,6 @@ namespace CzadRoom {
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
-            var roomService = serviceProvider.GetService<IRoomService>();
-            applicationLifetime.ApplicationStarted.Register(async () => await roomService.RemoveAllConnections());
-
         }
     }
 }

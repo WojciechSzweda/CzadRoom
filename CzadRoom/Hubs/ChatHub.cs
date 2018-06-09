@@ -15,11 +15,13 @@ namespace CzadRoom.Hubs {
         private readonly IRoomService _roomService;
         private readonly IServerCommands _serverCommands;
         private readonly IChatMessageService _chatMessageService;
+        private readonly IConnectionService _connectionService;
 
-        public ChatHub(IRoomService roomService, IServerCommands serverCommands, IChatMessageService chatMessageService) {
+        public ChatHub(IRoomService roomService, IServerCommands serverCommands, IChatMessageService chatMessageService, IConnectionService connectionService) {
             _roomService = roomService;
             _serverCommands = serverCommands;
             _chatMessageService = chatMessageService;
+            _connectionService = connectionService;
         }
 
         public async Task SendMessage(string message) {
@@ -33,7 +35,7 @@ namespace CzadRoom.Hubs {
         public Task SendRoomMessage(string roomId, string message) {
             var userId = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (_roomService.HasUserAccess(roomId, userId)) {
-                var msg = new ChatMessage { Content = message, RoomID = roomId, UserID = userId,Username = Context.User.Identity.Name };
+                var msg = new ChatMessage { Content = message, RoomID = roomId, UserID = userId, Username = Context.User.Identity.Name };
                 _chatMessageService.AddMessage(msg);
                 return Clients.Groups(roomId).SendAsync("ReceiveMessage", Context.User.Identity.Name, message, roomId);
             }
@@ -45,7 +47,7 @@ namespace CzadRoom.Hubs {
         public async Task JoinRoom(string roomId) {
             var clientId = Context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
-            await _roomService.UserConnected(new RoomConnection { RoomID = roomId, UserID = clientId, ConnectionID = Context.ConnectionId });
+            _connectionService.UserConnected(Context.ConnectionId, new RoomConnection { RoomID = roomId, UserID = clientId });
             await Clients.Group(roomId).SendAsync("ClientJoined", Context.User.Identity.Name);
         }
 
@@ -55,8 +57,9 @@ namespace CzadRoom.Hubs {
         }
 
         public override async Task OnDisconnectedAsync(Exception exception) {
-            var roomId = await _roomService.UserDisconnected(Context.ConnectionId);
-            await Clients.Group(roomId).SendAsync("ClientLeft", Context.User.Identity.Name);
+            var (isDisconnected, connection) = _connectionService.UserDisconnected(Context.ConnectionId);
+            if (isDisconnected)
+                await Clients.Group(connection.RoomID).SendAsync("ClientLeft", Context.User.Identity.Name);
             await base.OnDisconnectedAsync(exception);
         }
     }

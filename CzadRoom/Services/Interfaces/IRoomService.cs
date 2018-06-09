@@ -15,11 +15,6 @@ namespace CzadRoom.Services.Interfaces {
         Task<bool> AddAccessedUserToRoom(string roomId, string userId);
         bool HasUserAccess(string roomId, string userId);
 
-        Task UserConnected(RoomConnection roomConnection);
-        Task<string> UserDisconnected(string connectionId);
-        Task RemoveAllConnections();
-        Task<int> ConnectedUsersCount(string roomId);
-        Task<IEnumerable<string>> ConnectedUsersID(string roomId);
-        Task<IEnumerable<User>> ConnectedUsers(string roomId);
+        IEnumerable<User> ConnectedUsers(IEnumerable<string> usersId,string roomId);
     }
 }

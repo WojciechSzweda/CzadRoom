@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace CzadRoom.Models
 {
-    public class RoomConnection
+    public struct RoomConnection
     {
-        [BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
-        public string ID { get; set; }
-        public string ConnectionID { get; set; }
         public string RoomID { get; set; }
         public string UserID { get; set; }
 

@@ -18,17 +18,19 @@ namespace CzadRoom.Controllers {
         private readonly IUsersService _usersService;
         private readonly IMapper _mapper;
         private readonly IChatMessageService _chatMessageService;
+        private readonly IConnectionService _connectionService;
 
-        public ChatController(IRoomService roomService, IUsersService usersService, IMapper mapper, IChatMessageService chatMessageService) {
+        public ChatController(IRoomService roomService, IUsersService usersService, IMapper mapper, IChatMessageService chatMessageService, IConnectionService connectionService) {
             _roomService = roomService;
             _usersService = usersService;
             _mapper = mapper;
             _chatMessageService = chatMessageService;
+            _connectionService = connectionService;
         }
 
         public async Task<IActionResult> Index() {
             var rooms = (await _roomService.GetAll()).Select(x => _mapper.Map<Room, RoomViewModel>(x, opt =>
-            opt.AfterMap(async (src, dest) => dest.ClientCount = (await _roomService.ConnectedUsers(src.ID)).Distinct(new UserComparer()).Count())));
+            opt.AfterMap((src, dest) => dest.ClientCount = _connectionService.ConnectedUsersCount(src.ID))));
             return View(rooms);
         }
 
@@ -67,7 +69,7 @@ namespace CzadRoom.Controllers {
             if (!_roomService.HasUserAccess(roomId, userID))
                 return RedirectToAction("JoinRoom", new { roomId });
             var roomDB = await _roomService.GetRoom(roomId);
-            var users = (await _roomService.ConnectedUsers(roomId)).Distinct(new UserComparer());
+            var users = (_roomService.ConnectedUsers(_connectionService.ConnectedUsersID(roomId), roomId)).Distinct(new UserComparer());
             var room = _mapper.Map<Room, RoomViewModel>(roomDB, opt =>
                  opt.AfterMap((src, dest) => dest.UsersInRoom = users.Where(x => x.ID != userID).Select(x => _mapper.Map<UserViewModel>(x))));
             return View(room);

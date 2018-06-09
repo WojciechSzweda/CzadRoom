@@ -58,31 +58,8 @@ namespace CzadRoom.Services {
             return room.UsersIDWithAccess.Contains(userId) || room.OwnerID == userId || string.IsNullOrEmpty(room.Password);
         }
 
-        public async Task UserConnected(RoomConnection roomConnection) {
-            await _context.Connections.InsertOneAsync(roomConnection);
-        }
-
-        public async Task<string> UserDisconnected(string connectionId) {
-            var connection = await _context.Connections.Find(x => x.ConnectionID == connectionId).FirstOrDefaultAsync();
-            await _context.Connections.DeleteOneAsync(x => x.ID == connection.ID);
-            return connection.RoomID;
-        }
-
-        public async Task<int> ConnectedUsersCount(string roomId) {
-            return (int)await _context.Connections.CountAsync(x => x.RoomID == roomId);
-        }
-
-        public async Task RemoveAllConnections() {
-            await _context.Connections.DeleteManyAsync(_ => true);
-        }
-
-        public async Task<IEnumerable<string>> ConnectedUsersID(string roomId) {
-            return (await _context.Connections.Find(x => x.RoomID == roomId).ToListAsync()).Select(x => x.UserID);
-        }
-
-        public async Task<IEnumerable<User>> ConnectedUsers(string roomId) {
-            var connections = await _context.Connections.Find(x => x.RoomID == roomId).ToListAsync();
-            return connections.Select(x => _context.Users.Find(u => u.ID == x.UserID).FirstOrDefault());
+        public IEnumerable<User> ConnectedUsers(IEnumerable<string> usersId, string roomId) {
+            return usersId.Select(id => _context.Users.Find(user => user.ID == id).FirstOrDefault());
         }
     }
 }
