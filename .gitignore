@@ -78,3 +78,4 @@ _[Ss]cripts
 .vscode
 node_modules
 *.txt
+.editorconfig

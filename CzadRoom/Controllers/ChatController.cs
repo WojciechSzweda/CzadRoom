@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using CzadRoom.Comparers;
+using CzadRoom.Extensions;
 using CzadRoom.Models;
 using CzadRoom.Services.Interfaces;
 using CzadRoom.ViewModels;
@@ -40,10 +41,10 @@ namespace CzadRoom.Controllers {
             if (string.IsNullOrEmpty(roomDB.Password))
                 return RedirectToAction("Room", new { roomId = roomDB.ID });
 
-            if (roomDB.OwnerID == GetUserIdFromHttpContext())
+            if (roomDB.OwnerID == HttpContext.GetUserID())
                 return RedirectToAction("Room", new { roomId = roomDB.ID });
 
-            if (roomDB.UsersIDWithAccess.Contains(GetUserIdFromHttpContext()))
+            if (roomDB.UsersIDWithAccess.Contains(HttpContext.GetUserID()))
                 return RedirectToAction("Room", new { roomId = roomDB.ID });
             var room = new RoomJoinViewModel { Name = roomDB.Name, ID = roomDB.ID };
             return View(room);
@@ -59,13 +60,13 @@ namespace CzadRoom.Controllers {
             if (!BCrypt.Net.BCrypt.Verify(roomJoin.Password, roomDB.Password)) {
                 return RedirectToAction("Index");
             }
-            await _roomService.AddAccessedUserToRoom(roomDB.ID, GetUserIdFromHttpContext());
+            await _roomService.AddAccessedUserToRoom(roomDB.ID, HttpContext.GetUserID());
             return RedirectToAction("Room", new { roomId = roomJoin.ID });
 
         }
 
         public async Task<IActionResult> Room(string roomId) {
-            var userID = GetUserIdFromHttpContext();
+            var userID = HttpContext.GetUserID();
             if (!_roomService.HasUserAccess(roomId, userID))
                 return RedirectToAction("JoinRoom", new { roomId });
             var roomDB = await _roomService.GetRoom(roomId);
@@ -83,7 +84,7 @@ namespace CzadRoom.Controllers {
         public async Task<IActionResult> CreateRoom(RoomCreateViewModel roomVM) {
             var room = new Room {
                 Name = roomVM.Name,
-                OwnerID = GetUserIdFromHttpContext()
+                OwnerID = HttpContext.GetUserID()
             };
             if (!string.IsNullOrEmpty(roomVM.Password)) {
                 room.Password = BCrypt.Net.BCrypt.HashPassword(roomVM.Password, BCrypt.Net.BCrypt.GenerateSalt());
@@ -91,10 +92,6 @@ namespace CzadRoom.Controllers {
             var id = await _roomService.CreateRoom(room);
 
             return RedirectToAction("Room", new { roomId = id });
-        }
-
-        public string GetUserIdFromHttpContext() {
-            return HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
         }
 
         public struct MsgPost {
@@ -105,7 +102,7 @@ namespace CzadRoom.Controllers {
 
         [HttpPost]
         public IActionResult GetMessages([FromBody]MsgPost body) {
-            var userId = GetUserIdFromHttpContext();
+            var userId = HttpContext.GetUserID();
             if (!_roomService.HasUserAccess(body.roomId, userId))
                 return Unauthorized();
             var chatMessages = _chatMessageService.GetChatMessages(body.roomId, body.count).ToList();

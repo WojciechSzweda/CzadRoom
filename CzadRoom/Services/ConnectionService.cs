@@ -10,29 +10,28 @@ namespace CzadRoom.Services
 {
     public class ConnectionService : IConnectionService {
 
-        private readonly ConcurrentDictionary<string, RoomConnection> connections = new ConcurrentDictionary<string, RoomConnection>();
+        private readonly ConcurrentDictionary<string, RoomConnection> _connections = new ConcurrentDictionary<string, RoomConnection>();
 
         public int ConnectedUsersCount(string roomId) {
-            return connections.Count(x => x.Value.RoomID == roomId);
+            return _connections.Count(x => x.Value.RoomID == roomId);
         }
 
         public IEnumerable<string> ConnectedUsersID(string roomId) {
-            return connections.Where(x => x.Value.RoomID == roomId).Distinct().Select(x => x.Value.UserID);
+            return _connections.Where(x => x.Value.RoomID == roomId).Distinct().Select(x => x.Value.UserID);
         }
 
         public void RemoveAllConnections() {
-            connections.Clear();
+            _connections.Clear();
         }
 
         public bool UserConnected(string connectionId, RoomConnection roomConnection) {
-            return connections.TryAdd(connectionId, roomConnection);
+            return _connections.TryAdd(connectionId, roomConnection);
         }
 
         public (bool, RoomConnection) UserDisconnected(string connectionId) {
-            if (!connections.ContainsKey(connectionId))
+            if (!_connections.ContainsKey(connectionId))
                 return (false, default);
-            RoomConnection roomConnection;
-            return (connections.TryRemove(connectionId, out roomConnection), roomConnection);
+            return (_connections.TryRemove(connectionId, out RoomConnection roomConnection), roomConnection);
         }
     }
 }

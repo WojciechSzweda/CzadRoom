@@ -18,7 +18,6 @@ namespace CzadRoom.Models {
         public HashSet<string> UsersIDWithAccess { get; set; }
 
         public Room() {
-            ID = Guid.NewGuid().ToString();
             CreationDate = DateTime.Now;
             UsersIDWithAccess = new HashSet<string>();
         }

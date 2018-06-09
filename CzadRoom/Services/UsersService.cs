@@ -50,5 +50,9 @@ namespace CzadRoom.Services {
             return await _context.Users.Find(_ => true).ToListAsync();
         }
 
+        public async Task<IEnumerable<User>> GetFriends(string userId) {
+            var userDb = await _context.Users.Find(x => x.ID == userId).FirstOrDefaultAsync();
+            return userDb.FriendsID.Select(id => _context.Users.Find(user => user.ID == id).FirstOrDefault());
+        }
     }
 }

@@ -26,7 +26,6 @@ namespace CzadRoom.Services {
         }
 
         public async Task<bool> DeleteRoom(string roomId) {
-            await _context.Connections.DeleteManyAsync(x => x.RoomID == roomId);
             DeleteResult deleteResult = await _context.Rooms.DeleteOneAsync(x => x.ID == roomId);
             return deleteResult.IsAcknowledged && deleteResult.DeletedCount > 0;
         }
