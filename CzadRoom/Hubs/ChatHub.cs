@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using CzadRoom.ViewModels;
+using CzadRoom.Extensions;
 
 namespace CzadRoom.Hubs {
     [Authorize]
@@ -48,7 +49,7 @@ namespace CzadRoom.Hubs {
             var clientId = Context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
             _connectionService.UserConnected(Context.ConnectionId, new RoomConnection { RoomID = roomId, UserID = clientId });
-            await Clients.Group(roomId).SendAsync("ClientJoined", Context.User.Identity.Name);
+            await Clients.Group(roomId).SendAsync("ClientJoined", clientId, Context.User.Identity.Name);
         }
 
         public override async Task OnConnectedAsync() {

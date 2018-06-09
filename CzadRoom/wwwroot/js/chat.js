@@ -11,12 +11,12 @@ connection.on("ReceiveServerMessage", (message) => {
     appendNewServerMessage(message)
 });
 
-connection.on("ClientJoined", (client) => {
-    if (document.getElementById(`li-${client}`) !== null)
+connection.on("ClientJoined", (clientId, clientName) => {
+    if (document.getElementById(`li-${clientName}`) !== null)
         return
-    const msg = `${client} has joined`
+    const msg = `${clientName} has joined`
     appendNewServerMessage(msg)
-    const clientLi = generateClientSidebarLi(client)
+    const clientLi = generateClientSidebarLi(clientId, clientName)
     document.getElementById(`usersInRoom`).appendChild(clientLi)
 })
 

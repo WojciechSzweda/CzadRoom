@@ -56,6 +56,8 @@ namespace CzadRoom.Services {
         }
 
         public async Task<bool> AddFriend(string userId, string friendId) {
+            if (friendId == userId)
+                return false;
             var user = await _context.Users.Find(x => x.ID == userId).FirstOrDefaultAsync();
             var friend = await _context.Users.Find(x => x.ID == friendId).FirstOrDefaultAsync();
             if (friend != null && user != null) {

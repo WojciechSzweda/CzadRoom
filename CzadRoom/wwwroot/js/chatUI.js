@@ -39,10 +39,17 @@ function stringToHtmlNode(html) {
     return template.content.firstChild
 }
 
-function generateClientSidebarLi(client) {
+function generateClientSidebarLi(clientId, clientName) {
     let clientLi = document.createElement('li')
-    clientLi.innerText = client
-    clientLi.setAttribute('id', `li-${client}`)
+    clientLi.setAttribute('id', `li-${clientName}`)
+    clientLi.setAttribute('class', 'userInSidebar')
+
+    let button = document.createElement('button')
+    button.setAttribute('data-toggle', 'modal')
+    button.setAttribute('data-target', '#addFriendConfirmModal')
+    button.innerText = clientName
+    button.onclick = () => addFriendConfirm(clientId, clientName)
+    clientLi.appendChild(button)
     return clientLi
 }
 

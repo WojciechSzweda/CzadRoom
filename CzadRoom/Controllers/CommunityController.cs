@@ -30,5 +30,13 @@ namespace CzadRoom.Controllers
             var friends = (await _usersService.GetFriends(HttpContext.GetUserID())).Select(user => _mapper.Map<UserViewModel>(user));
             return View(friends);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AddFriend([FromBody]UserViewModel friend) {
+            var result = await _usersService.AddFriend(HttpContext.GetUserID(), friend.ID);
+            if (result)
+                return Ok();
+            return BadRequest();
+        }
     }
 }

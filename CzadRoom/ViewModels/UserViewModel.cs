@@ -8,6 +8,8 @@ namespace CzadRoom.ViewModels
 {
     public class UserViewModel
     {
+        [ScaffoldColumn(false)]
+        public string ID { get; set; }
         public string Username { get; set; }
         [Display(Name = "Avatar")]
         public string AvatarName { get; set; }
