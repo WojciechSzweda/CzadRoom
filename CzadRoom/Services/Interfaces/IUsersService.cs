@@ -16,5 +16,6 @@ namespace CzadRoom.Services.Interfaces
         Task<bool> Update(User user);
         Task<bool> Delete(string username);
         Task<IEnumerable<User>> GetFriends(string userId);
+        Task<bool> AddFriend(string userId, string friendId);
     }
 }

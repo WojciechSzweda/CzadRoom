@@ -21,7 +21,6 @@ namespace CzadRoom.ViewModels {
         [Required]
         [Compare("Password", ErrorMessage = "Passwords are not the same")]
         public string RepeatPassword { get; set; }
-        public string Nickname { get; set; }
         public IFormFile Avatar { get; set; }
     }
 }
