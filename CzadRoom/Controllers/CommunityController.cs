@@ -43,16 +43,32 @@ namespace CzadRoom.Controllers
             return BadRequest();
         }
 
-        public async Task<IActionResult> DirectMessage(string friendId) {
+        public async Task<IActionResult> DirectMessage(string roomId, string friendId) {
             var userID = HttpContext.GetUserID();
-            var room = await _directMessageRoomService.GetDirectMessageRoomWithFriend(userID, friendId);
-            if (room == null) {
-                room = new DirectMessageRoom(userID, friendId);
-                await _directMessageRoomService.CreateDirectMessageRoom(room);
+            DirectMessageRoom room;
+            if (roomId == null) {
+                room = await _directMessageRoomService.GetDirectMessageRoomWithFriend(userID, friendId);
+                if (room == null) {
+                    room = new DirectMessageRoom(userID, friendId);
+                    await _directMessageRoomService.CreateDirectMessageRoom(room);
+                }
             }
-            var roomVM = _mapper.Map<DirectMessageRoomViewModel>(room);
-            roomVM.Users = room.Users.Select(id => _mapper.Map<UserViewModel>(_usersService.GetUser(id).Result));
+            else {
+                room = await _directMessageRoomService.GetDirectMessageRoom(roomId);
+                if (!_directMessageRoomService.HasUserAccess(room.ID, userID))
+                    return RedirectToAction("Index");
+            }
+            var roomVM = _mapper.Map<DirectMessageRoom, DirectMessageRoomViewModel>(room, opt => 
+            opt.AfterMap((src, dest) => dest.Recipent = _mapper.Map<UserViewModel>(_usersService.GetUser(src.Users.FirstOrDefault(u => u != userID)).Result)));
             return View(roomVM);
+        }
+
+        public async Task<IActionResult> DirectMessages() {
+            var userID = HttpContext.GetUserID();
+            var dmRooms = await _directMessageRoomService.GetUserDirectMessageRooms(userID);
+            var dmRoomsVM = dmRooms.Select(dmr => _mapper.Map<DirectMessageRoom, DirectMessageRoomViewModel>(dmr, opt =>
+            opt.AfterMap((src, dest) => dest.Recipent = _mapper.Map<UserViewModel>(_usersService.GetUser(src.Users.FirstOrDefault(u => u != userID)).Result))));
+            return View(dmRoomsVM);
         }
 
         public struct MsgPost {

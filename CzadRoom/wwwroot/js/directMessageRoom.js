@@ -5,7 +5,6 @@
 connection.start().then(console.log("started connection")).catch(err => console.error(err.toString()))
 
 connection.on("ReceiveMessage", (user, message, roomId) => {
-    console.log("message received")
     appendNewMessage(user, message)
 })
 
@@ -46,20 +45,34 @@ function sendMessage() {
 
 async function getMessages() {
     const roomID = document.getElementById("RoomID").value;
-    let [responseError, response] = await resolve(fetch('./GetMessages', {
+    const request = fetch('./GetMessages', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         credentials: 'same-origin',
         body: JSON.stringify({ RoomId: roomID, count: 10 })
-    }))
-    if (responseError === null) {
-        let [dataErr, data] = await resolve(response.json())
-        if (dataErr == null) {
-            console.log(data)
-            data.forEach(x => appendNewMessage(x.from.username, x.content, x.date))
-            //TODO: chceck last message read status and if true notify user
+    })
+    const data = await getRequestData(request)
+    if (data === null)
+        return
+    data.forEach(x => appendNewMessage(x.from.username, x.content, x.date))
+
+    if (data[data.length - 1] !== undefined) {
+        if (data[data.length -1].read) {
+            console.lo
+            appendNewServerMessage(`Last message has been read`)
         }
     }
+}
+
+async function getRequestData(request) {
+    let [responseError, response] = await resolve(request)
+    if (responseError === null) {
+        let [dataErr, data] = await resolve(response.json())
+        if (dataErr === null) {
+            return data
+        }
+    }
+    return null
 }
 
 function resolve(promise) {

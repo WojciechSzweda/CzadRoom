@@ -11,7 +11,7 @@ namespace CzadRoom.MapperProfiles
     public class DirectMessageRoomViewModelProfile : Profile {
         public DirectMessageRoomViewModelProfile() {
             CreateMap<DirectMessageRoom, DirectMessageRoomViewModel>()
-                .ForMember(dest => dest.Users, output => output.Ignore());
+                .ForMember(dest => dest.Recipent, output => output.Ignore());
         }
     }
 }
