@@ -4,11 +4,8 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
+<h2>Friends</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -17,6 +14,9 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.AvatarName)
+            </th>
+            <th>
+
             </th>
         </tr>
     </thead>
@@ -27,7 +27,10 @@
                 @Html.DisplayFor(modelItem => item.Username)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AvatarName)
+               <img src="~/images/@Html.DisplayFor(modelItem => item.AvatarName)" width="64" height="64"/>
+            </td>
+            <td>
+                @Html.ActionLink("DM", "DirectMessage", new {friendId= item.ID})
             </td>
         </tr>
 }

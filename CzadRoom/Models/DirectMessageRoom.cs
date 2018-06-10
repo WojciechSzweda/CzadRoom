@@ -15,9 +15,9 @@ namespace CzadRoom.Models
 
         public HashSet<string> Users { get; set; }
 
-        public DirectMessageRoom() {
+        public DirectMessageRoom(string userId, string friendId) {
             CreationDate = DateTime.Now;
-            Users = new HashSet<string>();
+            Users = new HashSet<string>() { userId, friendId };
         }
     }
 }

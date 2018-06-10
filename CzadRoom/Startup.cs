@@ -44,6 +44,8 @@ namespace CzadRoom {
             services.AddTransient<IRoomService, RoomService>();
             services.AddTransient<IFileManager, FileManager>();
             services.AddTransient<IChatMessageService, ChatMessageService>();
+            services.AddTransient<IDirectMessageRoomService, DirectMessageRoomService>();
+            services.AddTransient<IDirectMessageService, DirectMessageService>();
 
             services.AddSingleton<IServerCommands, ServerCommands>();
             services.AddSingleton<IConnectionService, ConnectionService>();
@@ -85,6 +87,7 @@ namespace CzadRoom {
 
             app.UseSignalR(routes => {
                 routes.MapHub<ChatHub>("/chatHub");
+                routes.MapHub<DirectMessageHub>("/dmHub");
             });
 
             app.UseMvc(routes => {

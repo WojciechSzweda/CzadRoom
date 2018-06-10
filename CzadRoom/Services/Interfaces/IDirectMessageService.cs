@@ -9,7 +9,7 @@ namespace CzadRoom.Services.Interfaces
     public interface IDirectMessageService
     {
         Task AddDirectMessage(DirectMessage directMessage);
-        IEnumerable<DirectMessage> GetDirectMessages(string roomId, int count);
-        IEnumerable<DirectMessage> GetDirectMessages(string roomId, DateTime dateTime, int count);
+        IEnumerable<DirectMessage> GetDirectMessages(string roomId, string userId, int count);
+        IEnumerable<DirectMessage> GetDirectMessages(string roomId, string userId, DateTime dateTime, int count);
     }
 }

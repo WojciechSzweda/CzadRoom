@@ -14,11 +14,12 @@ namespace CzadRoom.Models
         public string RoomID { get; set; }
         public string FromID { get; set; }
         public string Content { get; set; }
-        public string ToID { get; set; }
+        public bool Read { get; set; }
         public DateTime Date { get; set; }
 
         public DirectMessage() {
             Date = DateTime.Now;
+            Read = false;
         }
     }
 }

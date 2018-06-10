@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using CzadRoom.Extensions;
+using CzadRoom.Models;
 using CzadRoom.Services.Interfaces;
 using CzadRoom.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -15,14 +16,17 @@ namespace CzadRoom.Controllers
     [Authorize]
     public class CommunityController : Controller
     {
-        private readonly IRoomService _roomService;
         private readonly IUsersService _usersService;
         private readonly IMapper _mapper;
+        private readonly IDirectMessageRoomService _directMessageRoomService;
+        private readonly IDirectMessageService _directMessageService;
 
-        public CommunityController(IRoomService roomService, IUsersService usersService, IMapper mapper) {
-            _roomService = roomService;
+        public CommunityController(IUsersService usersService, IMapper mapper, 
+            IDirectMessageRoomService directMessageRoomService, IDirectMessageService  directMessageService) {
             _usersService = usersService;
             _mapper = mapper;
+            _directMessageRoomService = directMessageRoomService;
+            _directMessageService = directMessageService;
         }
 
         public async Task<IActionResult> Index()
@@ -37,6 +41,40 @@ namespace CzadRoom.Controllers
             if (result)
                 return Ok();
             return BadRequest();
+        }
+
+        public async Task<IActionResult> DirectMessage(string friendId) {
+            var userID = HttpContext.GetUserID();
+            var room = await _directMessageRoomService.GetDirectMessageRoomWithFriend(userID, friendId);
+            if (room == null) {
+                room = new DirectMessageRoom(userID, friendId);
+                await _directMessageRoomService.CreateDirectMessageRoom(room);
+            }
+            var roomVM = _mapper.Map<DirectMessageRoomViewModel>(room);
+            roomVM.Users = room.Users.Select(id => _mapper.Map<UserViewModel>(_usersService.GetUser(id).Result));
+            return View(roomVM);
+        }
+
+        public struct MsgPost {
+            public string RoomId { get; set; }
+            public int Count { get; set; }
+            public DateTime Date { get; set; }
+        }
+
+        [HttpPost]
+        public IActionResult GetMessages([FromBody]MsgPost body) {
+            var userId = HttpContext.GetUserID();
+            if (!_directMessageRoomService.HasUserAccess(body.RoomId, userId))
+                return Unauthorized();
+            var directMessages = _directMessageService.GetDirectMessages(body.RoomId, userId, body.Count);
+            var directMessagesVM = ConvertDMsToViewModel(directMessages).ToList();
+            return Json(directMessagesVM);
+        }
+
+        IEnumerable<DirectMessageViewModel> ConvertDMsToViewModel(IEnumerable<DirectMessage> directMessages) {
+            var users = directMessages.Select(x => x.FromID).Distinct().ToDictionary(x => x, x => _mapper.Map<UserViewModel>(_usersService.GetUser(x).Result));
+            return directMessages.Select(dm => _mapper.Map<DirectMessage, DirectMessageViewModel>(dm, opt =>
+            opt.AfterMap((src, dest) => dest.From = users[src.FromID])));
         }
     }
 }

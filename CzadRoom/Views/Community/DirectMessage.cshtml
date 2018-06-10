@@ -1,0 +1,24 @@
+﻿@model DirectMessageRoomViewModel
+<div class="container">
+    <input asp-for="ID" type="hidden" id="RoomID" />
+
+    <div class="row chat-main">
+        <div class="chat-room-info">
+            <h2>@string.Join(" and ", Model.Users.Select(u => u.Username))</h2>
+        </div>
+        <div class="col-md-11 col-sm-10 message-list-box">
+            <ul id="messagesList"></ul>
+        </div>
+        <div class="col-md-12 message-textbox">
+            <textarea type="text" id="messageInput" rows="4" class="col-xs-10"></textarea>
+            <div class="col-xs-2 btn-holder">
+                <button class="btn" id="btnSendMsg">
+                    <span class="button-sendMsg-text">Send</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/lib/signalr/signalr.js"></script>
+<script src="~/js/chatUI.js"></script>
+<script src="~/js/directMessageRoom.js"></script>

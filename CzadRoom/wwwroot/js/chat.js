@@ -1,15 +1,15 @@
 ﻿const connection = new signalR.HubConnectionBuilder()
     .withUrl("/chatHub")
-    .build();
+    .build()
 
 
 connection.on("ReceiveMessage", (user, message, roomId) => {
     appendNewMessage(user,message)
-});
+})
 
 connection.on("ReceiveServerMessage", (message) => {
     appendNewServerMessage(message)
-});
+})
 
 connection.on("ClientJoined", (clientId, clientName) => {
     if (document.getElementById(`li-${clientName}`) !== null)
@@ -44,7 +44,7 @@ document.onkeyup = (key) => {
         sendMessage()
 }
 
-connection.start().catch(err => console.error(err.toString()));
+connection.start().catch(err => console.error(err.toString()))
 
 function sendMessage() {
     const roomID = document.getElementById("RoomID").value;

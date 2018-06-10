@@ -24,8 +24,18 @@ namespace CzadRoom.Services
             return await _mongoDbContext.DirectMessagesRooms.Find(x => x.ID == roomId).FirstOrDefaultAsync();
         }
 
+        public async Task<DirectMessageRoom> GetDirectMessageRoomWithFriend(string userId, string friendId) {
+            return await _mongoDbContext.DirectMessagesRooms.Find(x => x.Users.Contains(userId) && x.Users.Contains(friendId)).FirstOrDefaultAsync();
+        }
+
         public async Task<IEnumerable<DirectMessageRoom>> GetUserDirectMessageRooms(string userId) {
             return await _mongoDbContext.DirectMessagesRooms.Find(x => x.Users.Contains(userId)).ToListAsync();
         }
+
+        public bool HasUserAccess(string roomId, string userId) {
+            var room = _mongoDbContext.DirectMessagesRooms.Find(x => x.ID == roomId).FirstOrDefault();
+            return room.Users.Contains(userId);
+        }
+
     }
 }
