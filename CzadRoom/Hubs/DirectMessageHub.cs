@@ -31,13 +31,6 @@ namespace CzadRoom.Hubs {
             }
         }
 
-        public Task ReadMessages(string roomId) {
-            var userId = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            if (_directMessageRoomService.HasUserAccess(roomId, userId))
-                return Clients.Groups(roomId).SendAsync("ReadConfirm", Context.User.Identity.Name, DateTime.Now);
-            return Clients.Caller.SendAsync("ReceiveServerMessage", "error");
-        }
-
         public Task Focused(string roomId, bool isFocused) {
             var userId = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (_directMessageRoomService.HasUserAccess(roomId, userId))

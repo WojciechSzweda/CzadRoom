@@ -2,7 +2,7 @@
     .withUrl('/dmHub')
     .build();
 
-connection.start().then(console.log('started connection')).catch(err => console.error(err.toString()))
+connection.start().catch(err => console.error(err.toString()))
 
 connection.on('ReceiveMessage', (user, message, roomId) => {
     appendNewMessage(user, message)
@@ -10,10 +10,6 @@ connection.on('ReceiveMessage', (user, message, roomId) => {
 
 connection.on('ReceiveServerMessage', (message) => {
     appendNewServerMessage(message)
-})
-
-connection.on('ReadConfirm', (username, date) => {
-    console.log(`${username} read @${formatDate(new Date(date))}`)
 })
 
 document.getElementById('btnSendMsg').addEventListener('click', event => {
@@ -27,13 +23,11 @@ document.onkeyup = (key) => {
 }
 
 window.onfocus = () => {
-    console.log('focused')
     const roomID = document.getElementById('RoomID').value
     connection.invoke('Focused', roomID, true).catch(err => console.error(err.toString()))
 }
 
 window.onblur = () => {
-    console.log('onblur')
     const roomID = document.getElementById('RoomID').value
     connection.invoke('Focused', roomID, false).catch(err => console.error(err.toString()))
 }
@@ -42,7 +36,6 @@ connection.on('Connected', () => {
     const roomID = document.getElementById('RoomID').value
     connection.invoke('JoinRoom', roomID).catch(err => console.error(err.toString()))
     getMessages()
-    console.log(`Joined room ${roomID}`)
 })
 
 let unreadMessages = false
@@ -91,7 +84,6 @@ async function getMessages() {
     const data = await getRequestData(request)
     if (data === null)
         return
-    console.log(data)
     data.forEach(x => appendNewMessage(x.from.username, x.content, x.date))
 
     if (data[data.length - 1] !== undefined) {

@@ -30,7 +30,6 @@ connection.on("Connected", () => {
     const roomID = document.getElementById("RoomID").value
     connection.invoke("JoinRoom", roomID).catch(err => console.error(err.toString()))
     getMessages()
-    console.log(`Joined room ${roomID}`)
 })
 
 
