@@ -11,10 +11,12 @@ namespace CzadRoom.Hubs {
     public class DirectMessageHub : Hub {
         private readonly IDirectMessageRoomService _directMessageRoomService;
         private readonly IDirectMessageService _directMessageService;
+        private readonly IConnectionService _connectionService;
 
-        public DirectMessageHub(IDirectMessageRoomService directMessageRoomService, IDirectMessageService directMessageService) {
+        public DirectMessageHub(IDirectMessageRoomService directMessageRoomService, IDirectMessageService directMessageService, IConnectionService connectionService) {
             _directMessageRoomService = directMessageRoomService;
             _directMessageService = directMessageService;
+            _connectionService = connectionService;
         }
 
         public Task SendRoomMessage(string roomId, string message) {
@@ -36,16 +38,31 @@ namespace CzadRoom.Hubs {
             return Clients.Caller.SendAsync("ReceiveServerMessage", "error");
         }
 
+        public Task Focused(string roomId, bool isFocused) {
+            var userId = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            if (_directMessageRoomService.HasUserAccess(roomId, userId))
+                return Clients.Groups(roomId).SendAsync("Focused", userId, isFocused);
+            return Clients.Caller.SendAsync("FocusedError", "error");
+        }
+
         public async Task JoinRoom(string roomId) {
             var userId = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (!_directMessageRoomService.HasUserAccess(roomId, userId))
                 await Clients.Caller.SendAsync("ReceiveServerMessage", "error");
+            _connectionService.UserConnected(Context.ConnectionId, new RoomConnection { RoomID = roomId, UserID = userId });
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
         }
 
         public override async Task OnConnectedAsync() {
             await Clients.Caller.SendAsync("Connected");
             await base.OnConnectedAsync();
+        }
+
+        public override async Task OnDisconnectedAsync(Exception exception) {
+            var (isDisconnected, connection) = _connectionService.UserDisconnected(Context.ConnectionId);
+            if (isDisconnected)
+                await Clients.Group(connection.RoomID).SendAsync("ClientLeft", connection.UserID);
+            await base.OnDisconnectedAsync(exception);
         }
     }
 

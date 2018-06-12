@@ -1,5 +1,5 @@
 ﻿function generateMessageHTML(user, message, date) {
-    let li = `<li class="msg-li">
+    const li = `<li class="msg-li">
         <div class="message">
             <div class="message-client">
                 <p>${user}<span class="message-date">${date === undefined ? formatDate(new Date()) : formatDate(new Date(Date.parse(date)))}</span></p>
@@ -17,7 +17,7 @@ function generateMessageLiNode(user, message, date) {
 }
 
 function generateServerMessageHTML(message) {
-    let li = `<li class="msg-li">
+    const li = `<li class="msg-li">
                 <div class="message-content">
                     <p>${message}</p>
                 </div>
@@ -34,17 +34,17 @@ function formatDate(date) {
 }
 
 function stringToHtmlNode(html) {
-    let template = document.createElement('template')
+    const template = document.createElement('template')
     template.innerHTML = html
     return template.content.firstChild
 }
 
 function generateClientSidebarLi(clientId, clientName) {
-    let clientLi = document.createElement('li')
+    const clientLi = document.createElement('li')
     clientLi.setAttribute('id', `li-${clientName}`)
     clientLi.setAttribute('class', 'userInSidebar')
 
-    let button = document.createElement('button')
+    const button = document.createElement('button')
     button.setAttribute('data-toggle', 'modal')
     button.setAttribute('data-target', '#addFriendConfirmModal')
     button.innerText = clientName
@@ -62,5 +62,8 @@ function appendNewMessage(user, message, date) {
 
 function appendNewServerMessage(message) {
     const li = generateServerMessageLiNode(message)
-    document.getElementById("messagesList").appendChild(li)
+    const msgList = document.getElementById("messagesList")
+    msgList.appendChild(li)
+    msgList.scrollTo(0, msgList.scrollHeight)
+
 }
