@@ -15,6 +15,7 @@ namespace CzadRoom.Models
         public string FromID { get; set; }
         public string Content { get; set; }
         public bool Read { get; set; }
+        public DateTime? ReadAt { get; set; }
         public DateTime Date { get; set; }
 
         public DirectMessage() {

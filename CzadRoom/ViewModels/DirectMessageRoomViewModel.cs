@@ -9,5 +9,6 @@ namespace CzadRoom.ViewModels
     {
         public string ID { get; set; }
         public UserViewModel Recipent { get; set; }
+        public bool HasNewMessage { get; set; }
     }
 }

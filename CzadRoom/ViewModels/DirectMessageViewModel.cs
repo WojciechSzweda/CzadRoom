@@ -10,6 +10,8 @@ namespace CzadRoom.ViewModels
         public string Content { get; set; }
         public DateTime Date { get; set; }
         public UserViewModel From { get; set; }
+        public bool IsCurrentUser { get; set; }
+        public DateTime? ReadAt { get; set; }
         public bool Read { get; set; }
     }
 }

@@ -8,7 +8,7 @@
                 @Html.DisplayNameFor(model => model.Recipent)
             </th>
             <th>
-                Read #TODO
+                New Message
             </th>
             <th>
 
@@ -22,13 +22,15 @@
                     @Html.DisplayFor(modelItem => item.Recipent.Username)
                 </td>
                 <td>
-                    
+                    @if (item.HasNewMessage) {
+                        <span class="glyphicon glyphicon-envelope" />
+                    }
                 </td>
                 <td>
                     @Html.ActionLink("Open Direct Message", "DirectMessage", new { roomId = item.ID })
                 </td>
             </tr>
         }
-    </tbody>
-</table>
+                </tbody>
+            </table>
 

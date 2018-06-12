@@ -54,12 +54,12 @@ async function getMessages() {
     const data = await getRequestData(request)
     if (data === null)
         return
+    console.log(data)
     data.forEach(x => appendNewMessage(x.from.username, x.content, x.date))
 
     if (data[data.length - 1] !== undefined) {
-        if (data[data.length -1].read) {
-            console.lo
-            appendNewServerMessage(`Last message has been read`)
+        if (data[data.length - 1].read && data[data.length - 1].isCurrentUser) {
+            appendNewServerMessage(`Message has been read ${formatDate(new Date(data[data.length - 1].readAt))}`)
         }
     }
 }

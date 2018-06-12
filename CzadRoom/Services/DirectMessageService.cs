@@ -28,9 +28,18 @@ namespace CzadRoom.Services {
             var newMessages = messages.Where(x => x.FromID != userId && !x.Read);
             foreach (var msg in newMessages) {
                 _mongoDbContext.DirectMessages.UpdateOne(x => x.ID == msg.ID, Builders<DirectMessage>.Update.Set(m => m.Read, true));
+                _mongoDbContext.DirectMessages.UpdateOne(x => x.ID == msg.ID, Builders<DirectMessage>.Update.Set(m => m.ReadAt, DateTime.Now));
             }
 
             return messages;
+        }
+
+        public bool HasNewMessage(string roomId, string userId) {
+            var message = _mongoDbContext.DirectMessages.AsQueryable()
+                 .Where(x => x.RoomID == roomId)
+                 .OrderByDescending(x => x.Date)
+                 .FirstOrDefault();
+            return message != null && message.FromID != userId && !message.Read;
         }
 
         public IEnumerable<DirectMessage> GetDirectMessages(string roomId, string userId, DateTime dateTime, int count) {
@@ -43,6 +52,7 @@ namespace CzadRoom.Services {
             var newMessages = messages.SkipWhile(x => x.Read).Where(x => x.FromID != userId);
             foreach (var msg in newMessages) {
                 _mongoDbContext.DirectMessages.UpdateOne(x => x.ID == msg.ID, Builders<DirectMessage>.Update.Set(m => m.Read, true));
+                _mongoDbContext.DirectMessages.UpdateOne(x => x.ID == msg.ID, Builders<DirectMessage>.Update.Set(m => m.ReadAt, DateTime.Now));
             }
 
             return messages;
