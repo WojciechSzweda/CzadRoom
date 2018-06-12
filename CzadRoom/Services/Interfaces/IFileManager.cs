@@ -8,8 +8,8 @@ namespace CzadRoom.Services.Interfaces
 {
     public interface IFileManager
     {
-        (bool ok, string fileName) UploadImage(IFormFile file, string username);
-        void ResizeImage(IFormFile file, int width, int height);
+        bool ValidateImage(IFormFile file);
+        string UploadImage(IFormFile file, string username);
         void DeleteImage(string fileName);
         string GetImagePath(string fileName);
     }

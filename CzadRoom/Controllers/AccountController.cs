@@ -51,12 +51,10 @@ namespace CzadRoom.Controllers {
                 ViewData["Error"] = "Email already in use";
                 return View();
             }
-            var uploadedResult = _fileManager.UploadImage(userVM.Avatar, userVM.Username);
-            //TODO: nickname creator
             var user = _mapper.Map<User>(userVM);
             user.Password = BCrypt.Net.BCrypt.HashPassword(userVM.Password, BCrypt.Net.BCrypt.GenerateSalt());
-            if (uploadedResult.ok)
-                user.AvatarName = uploadedResult.fileName;
+            if (_fileManager.ValidateImage(userVM.Avatar))
+                user.AvatarName = _fileManager.UploadImage(userVM.Avatar, userVM.Username);
             else
                 user.AvatarName = _fileManager.GetImagePath("defaultAvatar.png");
             await _usersService.Create(user);

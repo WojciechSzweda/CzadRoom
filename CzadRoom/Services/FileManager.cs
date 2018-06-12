@@ -7,8 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CzadRoom.Services
-{
+namespace CzadRoom.Services {
     public class FileManager : IFileManager {
         private readonly string _imagesPath;
 
@@ -26,17 +25,8 @@ namespace CzadRoom.Services
             return Path.Combine(_imagesPath, fileName);
         }
 
-        public void ResizeImage(IFormFile file, int width, int height) {
-            throw new NotImplementedException();
-        }
-
-        public (bool ok, string fileName) UploadImage(IFormFile file, string username) {
-            if (file == null) return (false, string.Empty);
-            if (file.Length == 0) return (false, string.Empty);
-
+        public string UploadImage(IFormFile file, string username) {
             var fileName = username + DateTime.Now;
-            var fileExt = Path.GetExtension(file.FileName);
-            if (fileExt == null) return (false, string.Empty);
 
             if (!Directory.Exists(_imagesPath))
                 Directory.CreateDirectory(_imagesPath);
@@ -45,7 +35,11 @@ namespace CzadRoom.Services
             using (var fileStream = new FileStream(path, FileMode.Create))
                 file.CopyTo(fileStream);
 
-            return (true, fileName);
+            return fileName;
+        }
+
+        public bool ValidateImage(IFormFile file) {
+            return (file == null || file.Length == 0 || Path.GetExtension(file.FileName) == null);
         }
     }
 }
