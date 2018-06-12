@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CzadRoom.ViewModels
 {
-    public class RoomViewModel
+    public class ChatRoomViewModel
     {
         public string ID { get; set; }
         public string Name { get; set; }

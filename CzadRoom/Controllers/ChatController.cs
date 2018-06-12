@@ -30,7 +30,7 @@ namespace CzadRoom.Controllers {
         }
 
         public async Task<IActionResult> Index() {
-            var rooms = (await _roomService.GetAll()).Select(x => _mapper.Map<Room, RoomViewModel>(x, opt =>
+            var rooms = (await _roomService.GetAll()).Select(x => _mapper.Map<ChatRoom, ChatRoomViewModel>(x, opt =>
             opt.AfterMap((src, dest) => dest.ClientCount = _connectionService.ConnectedUsersCount(src.ID))));
             return View(rooms);
         }
@@ -46,12 +46,12 @@ namespace CzadRoom.Controllers {
 
             if (roomDB.UsersIDWithAccess.Contains(HttpContext.GetUserID()))
                 return RedirectToAction("Room", new { roomId = roomDB.ID });
-            var room = new RoomJoinViewModel { Name = roomDB.Name, ID = roomDB.ID };
+            var room = new ChatRoomJoinViewModel { Name = roomDB.Name, ID = roomDB.ID };
             return View(room);
         }
 
         [HttpPost]
-        public async Task<IActionResult> JoinRoom(RoomJoinViewModel roomJoin) {
+        public async Task<IActionResult> JoinRoom(ChatRoomJoinViewModel roomJoin) {
             var roomDB = await _roomService.GetRoom(roomJoin.ID);
             if (!ModelState.IsValid)
                 return View(roomJoin);
@@ -71,7 +71,7 @@ namespace CzadRoom.Controllers {
                 return RedirectToAction("JoinRoom", new { roomId });
             var roomDB = await _roomService.GetRoom(roomId);
             var users = (_roomService.ConnectedUsers(_connectionService.ConnectedUsersID(roomId), roomId)).Distinct(new UserComparer());
-            var room = _mapper.Map<Room, RoomViewModel>(roomDB, opt =>
+            var room = _mapper.Map<ChatRoom, ChatRoomViewModel>(roomDB, opt =>
                  opt.AfterMap((src, dest) => dest.UsersInRoom = users.Where(x => x.ID != userID).Select(x => _mapper.Map<UserViewModel>(x))));
             return View(room);
         }
@@ -81,8 +81,8 @@ namespace CzadRoom.Controllers {
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRoom(RoomCreateViewModel roomVM) {
-            var room = new Room {
+        public async Task<IActionResult> CreateRoom(ChatRoomCreateViewModel roomVM) {
+            var room = new ChatRoom {
                 Name = roomVM.Name,
                 OwnerID = HttpContext.GetUserID()
             };

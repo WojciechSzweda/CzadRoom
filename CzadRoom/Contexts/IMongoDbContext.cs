@@ -10,7 +10,7 @@ namespace CzadRoom.Contexts
     public interface IMongoDbContext
     {
         IMongoCollection<User> Users { get; }
-        IMongoCollection<Room> Rooms { get; }
+        IMongoCollection<ChatRoom> Rooms { get; }
         IMongoCollection<ChatMessage> ChatMessages { get; }
         IMongoCollection<DirectMessageRoom> DirectMessagesRooms { get; }
         IMongoCollection<DirectMessage> DirectMessages { get; }

@@ -15,7 +15,7 @@ namespace CzadRoom.Contexts
             _db = client.GetDatabase(options.Value.Database);
         }
         public IMongoCollection<User> Users => _db.GetCollection<User>("Users");
-        public IMongoCollection<Room> Rooms => _db.GetCollection<Room>("Rooms");
+        public IMongoCollection<ChatRoom> Rooms => _db.GetCollection<ChatRoom>("Rooms");
         public IMongoCollection<ChatMessage> ChatMessages => _db.GetCollection<ChatMessage>("ChatMessages");
         public IMongoCollection<DirectMessageRoom> DirectMessagesRooms => _db.GetCollection<DirectMessageRoom>("DirectMessageRooms");
         public IMongoCollection<DirectMessage> DirectMessages => _db.GetCollection<DirectMessage>("DirectMessages");

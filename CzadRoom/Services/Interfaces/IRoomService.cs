@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace CzadRoom.Services.Interfaces {
     public interface IRoomService {
-        Task<IEnumerable<Room>> GetAll();
-        Task<Room> GetRoom(string roomId);
-        Task<string> CreateRoom(Room room);
-        Task<bool> UpdateRoom(Room room);
+        Task<IEnumerable<ChatRoom>> GetAll();
+        Task<ChatRoom> GetRoom(string roomId);
+        Task<string> CreateRoom(ChatRoom room);
+        Task<bool> UpdateRoom(ChatRoom room);
         Task<bool> DeleteRoom(string roomId);
         Task AppendMessage(string roomId, string message);
         Task<bool> AddAccessedUserToRoom(string roomId, string userId);

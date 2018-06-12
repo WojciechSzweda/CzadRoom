@@ -20,7 +20,7 @@ namespace CzadRoom.Services {
             throw new NotImplementedException();
         }
 
-        public async Task<string> CreateRoom(Room room) {
+        public async Task<string> CreateRoom(ChatRoom room) {
             await _context.Rooms.InsertOneAsync(room);
             return room.ID;
         }
@@ -30,24 +30,24 @@ namespace CzadRoom.Services {
             return deleteResult.IsAcknowledged && deleteResult.DeletedCount > 0;
         }
 
-        public async Task<IEnumerable<Room>> GetAll() {
+        public async Task<IEnumerable<ChatRoom>> GetAll() {
             return await _context.Rooms.Find(_ => true).ToListAsync();
         }
 
-        public async Task<Room> GetRoom(string roomId) {
-            FilterDefinition<Room> filter = Builders<Room>.Filter.Eq(r => r.ID, roomId);
+        public async Task<ChatRoom> GetRoom(string roomId) {
+            FilterDefinition<ChatRoom> filter = Builders<ChatRoom>.Filter.Eq(r => r.ID, roomId);
             return await _context.Rooms.Find(filter).FirstOrDefaultAsync();
         }
 
-        public async Task<bool> UpdateRoom(Room room) {
+        public async Task<bool> UpdateRoom(ChatRoom room) {
             ReplaceOneResult updateResult = await _context.Rooms.ReplaceOneAsync(filter: r => r.ID == room.ID, replacement: room);
             return updateResult.IsAcknowledged && updateResult.ModifiedCount > 0;
         }
 
         public async Task<bool> AddAccessedUserToRoom(string roomId, string userId) {
             var updateResult = await _context.Rooms.UpdateOneAsync(
-                Builders<Room>.Filter.Eq(x => x.ID, roomId),
-                Builders<Room>.Update.AddToSet(x => x.UsersIDWithAccess, userId)
+                Builders<ChatRoom>.Filter.Eq(x => x.ID, roomId),
+                Builders<ChatRoom>.Update.AddToSet(x => x.UsersIDWithAccess, userId)
                 );
             return updateResult.IsAcknowledged && updateResult.ModifiedCount > 0;
         }
