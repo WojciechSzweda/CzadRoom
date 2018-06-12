@@ -23,11 +23,15 @@ document.onkeyup = (key) => {
 }
 
 window.onfocus = () => {
+    if (connection.connection.connectionState !== 1)
+        return
     const roomID = document.getElementById('RoomID').value
     connection.invoke('Focused', roomID, true).catch(err => console.error(err.toString()))
 }
 
 window.onblur = () => {
+    if (connection.connection.connectionState !== 1)
+        return
     const roomID = document.getElementById('RoomID').value
     connection.invoke('Focused', roomID, false).catch(err => console.error(err.toString()))
 }
@@ -63,6 +67,8 @@ connection.on('ClientLeft', (userId) => {
 })
 
 function sendMessage() {
+    if (connection.connection.connectionState !== 1)
+        return
     const roomID = document.getElementById('RoomID').value;
     const input = document.getElementById('messageInput')
     const message = input.value.trim();
@@ -79,7 +85,7 @@ async function getMessages() {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         credentials: 'same-origin',
-        body: JSON.stringify({ RoomId: roomID, count: 10 })
+        body: JSON.stringify({ RoomId: roomID, count: 100 })
     })
     const data = await getRequestData(request)
     if (data === null)

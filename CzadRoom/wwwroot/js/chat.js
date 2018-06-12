@@ -46,6 +46,8 @@ document.onkeyup = (key) => {
 connection.start().catch(err => console.error(err.toString()))
 
 function sendMessage() {
+    if (connection.connection.connectionState !== 1)
+        return
     const roomID = document.getElementById("RoomID").value;
     const input = document.getElementById("messageInput")
     const message = input.value.trim();

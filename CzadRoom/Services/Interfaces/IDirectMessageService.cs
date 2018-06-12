@@ -12,5 +12,6 @@ namespace CzadRoom.Services.Interfaces
         IEnumerable<DirectMessage> GetDirectMessages(string roomId, string userId, int count);
         IEnumerable<DirectMessage> GetDirectMessages(string roomId, string userId, DateTime dateTime, int count);
         bool HasNewMessage(string roomId, string userId);
+        Task MarkAsRead(string roomId, string userId);
     }
 }

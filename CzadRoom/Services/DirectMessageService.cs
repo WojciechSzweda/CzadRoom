@@ -57,5 +57,17 @@ namespace CzadRoom.Services {
 
             return messages;
         }
+
+        public async Task MarkAsRead(string roomId, string userId) {
+            var message = _mongoDbContext.DirectMessages.AsQueryable()
+                 .Where(x => x.RoomID == roomId)
+                 .OrderByDescending(x => x.Date)
+                 .FirstOrDefault(x => x.FromID != userId);
+            if (message == null)
+                return;
+            var msgDb = await _mongoDbContext.DirectMessages.Find(x => x.ID == message.ID).FirstOrDefaultAsync();
+            await _mongoDbContext.DirectMessages.UpdateOneAsync(x => x.ID == message.ID, Builders<DirectMessage>.Update.Set(m => m.Read, true));
+            await _mongoDbContext.DirectMessages.UpdateOneAsync(x => x.ID == message.ID, Builders<DirectMessage>.Update.Set(m => m.ReadAt, DateTime.Now));
+        }
     }
 }

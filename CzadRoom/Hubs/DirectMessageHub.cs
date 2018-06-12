@@ -55,6 +55,7 @@ namespace CzadRoom.Hubs {
             var (isDisconnected, connection) = _connectionService.UserDisconnected(Context.ConnectionId);
             if (isDisconnected)
                 await Clients.Group(connection.RoomID).SendAsync("ClientLeft", connection.UserID);
+            await _directMessageService.MarkAsRead(connection.RoomID, connection.UserID);
             await base.OnDisconnectedAsync(exception);
         }
     }
