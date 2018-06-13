@@ -50,6 +50,9 @@ namespace CzadRoom {
             services.AddSingleton<IServerCommands, ServerCommands>();
             services.AddSingleton<IConnectionService, ConnectionService>();
 
+            services.AddDistributedMemoryCache();
+            services.AddSession();
+
             services.AddAuthentication(options => {
                 options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -89,6 +92,8 @@ namespace CzadRoom {
                 routes.MapHub<ChatHub>("/chatHub");
                 routes.MapHub<DirectMessageHub>("/dmHub");
             });
+
+            app.UseSession();
 
             app.UseMvc(routes => {
                 routes.MapRoute(
