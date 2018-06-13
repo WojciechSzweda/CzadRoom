@@ -13,12 +13,12 @@ using CzadRoom.Extensions;
 namespace CzadRoom.Hubs {
     [Authorize]
     public class ChatHub : Hub {
-        private readonly IRoomService _roomService;
+        private readonly IChatRoomService _roomService;
         private readonly IServerCommands _serverCommands;
         private readonly IChatMessageService _chatMessageService;
         private readonly IConnectionService _connectionService;
 
-        public ChatHub(IRoomService roomService, IServerCommands serverCommands, IChatMessageService chatMessageService, IConnectionService connectionService) {
+        public ChatHub(IChatRoomService roomService, IServerCommands serverCommands, IChatMessageService chatMessageService, IConnectionService connectionService) {
             _roomService = roomService;
             _serverCommands = serverCommands;
             _chatMessageService = chatMessageService;

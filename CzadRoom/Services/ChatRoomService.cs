@@ -8,11 +8,11 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace CzadRoom.Services {
-    public class RoomService : IRoomService {
+    public class ChatRoomService : IChatRoomService {
 
         private readonly IMongoDbContext _context;
 
-        public RoomService(IMongoDbContext mongoDbContext) {
+        public ChatRoomService(IMongoDbContext mongoDbContext) {
             _context = mongoDbContext;
         }
 

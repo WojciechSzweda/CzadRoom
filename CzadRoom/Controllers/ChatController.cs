@@ -15,13 +15,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace CzadRoom.Controllers {
     [Authorize]
     public class ChatController : Controller {
-        private readonly IRoomService _roomService;
+        private readonly IChatRoomService _roomService;
         private readonly IUsersService _usersService;
         private readonly IMapper _mapper;
         private readonly IChatMessageService _chatMessageService;
         private readonly IConnectionService _connectionService;
 
-        public ChatController(IRoomService roomService, IUsersService usersService, IMapper mapper, IChatMessageService chatMessageService, IConnectionService connectionService) {
+        public ChatController(IChatRoomService roomService, IUsersService usersService, IMapper mapper, IChatMessageService chatMessageService, IConnectionService connectionService) {
             _roomService = roomService;
             _usersService = usersService;
             _mapper = mapper;

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace CzadRoom.Services.Interfaces {
-    public interface IRoomService {
+    public interface IChatRoomService {
         Task<IEnumerable<ChatRoom>> GetAll();
         Task<ChatRoom> GetRoom(string roomId);
         Task<string> CreateRoom(ChatRoom room);
