@@ -8,12 +8,16 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace CzadRoom.Services {
-    public class ChatRoomService : IChatRoomService, IRoomService<ChatRoom> {
+    public class ChatRoomService : IChatRoomService {
 
         private readonly IMongoDbContext _context;
 
         public ChatRoomService(IMongoDbContext mongoDbContext) {
             _context = mongoDbContext;
+        }
+
+        public Task AppendMessage(string roomId, string message) {
+            throw new NotImplementedException();
         }
 
         public async Task<string> CreateRoom(ChatRoom room) {
@@ -33,6 +37,11 @@ namespace CzadRoom.Services {
         public async Task<ChatRoom> GetRoom(string roomId) {
             FilterDefinition<ChatRoom> filter = Builders<ChatRoom>.Filter.Eq(r => r.ID, roomId);
             return await _context.Rooms.Find(filter).FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> UpdateRoom(ChatRoom room) {
+            ReplaceOneResult updateResult = await _context.Rooms.ReplaceOneAsync(filter: r => r.ID == room.ID, replacement: room);
+            return updateResult.IsAcknowledged && updateResult.ModifiedCount > 0;
         }
 
         public async Task<bool> AddAccessedUserToRoom(string roomId, string userId) {

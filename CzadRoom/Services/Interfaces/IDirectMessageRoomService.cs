@@ -8,8 +8,10 @@ namespace CzadRoom.Services.Interfaces
 {
     public interface IDirectMessageRoomService
     {
-        Task<DirectMessageRoom> GetRoomWithFriend(string userId, string friendId);
-        Task<IEnumerable<DirectMessageRoom>> GetUserRooms(string userId);
+        Task CreateDirectMessageRoom(DirectMessageRoom directMessageRoom);
+        Task<DirectMessageRoom> GetDirectMessageRoom(string roomId);
+        Task<DirectMessageRoom> GetDirectMessageRoomWithFriend(string userId, string friendId);
+        Task<IEnumerable<DirectMessageRoom>> GetUserDirectMessageRooms(string userId);
         bool HasUserAccess(string roomId, string userId);
     }
 }

@@ -44,14 +44,14 @@ namespace CzadRoom.Controllers {
             var userID = HttpContext.GetUserID();
             DirectMessageRoom room;
             if (roomId == null) {
-                room = await _directMessageRoomService.GetRoomWithFriend(userID, friendId);
+                room = await _directMessageRoomService.GetDirectMessageRoomWithFriend(userID, friendId);
                 if (room == null) {
                     room = new DirectMessageRoom(userID, friendId);
-                    await _directMessageRoomService.CreateRoom(room);
+                    await _directMessageRoomService.CreateDirectMessageRoom(room);
                 }
             }
             else {
-                room = await _directMessageRoomService.GetRoom(roomId);
+                room = await _directMessageRoomService.GetDirectMessageRoom(roomId);
                 if (!_directMessageRoomService.HasUserAccess(room.ID, userID))
                     return RedirectToAction("Index");
             }
@@ -62,7 +62,7 @@ namespace CzadRoom.Controllers {
 
         public async Task<IActionResult> DirectMessages() {
             var userID = HttpContext.GetUserID();
-            var dmRooms = await _directMessageRoomService.GetUserRooms(userID);
+            var dmRooms = await _directMessageRoomService.GetUserDirectMessageRooms(userID);
             var dmRoomsVM = dmRooms.Select(dmr => _mapper.Map<DirectMessageRoom, DirectMessageRoomViewModel>(dmr, opt =>
             opt.AfterMap((src, dest) => {
                 dest.Recipent = _mapper.Map<UserViewModel>(_usersService.GetUser(src.Users.FirstOrDefault(u => u != userID)).Result);
