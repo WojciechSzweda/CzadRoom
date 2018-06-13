@@ -16,7 +16,7 @@ connection.on("ClientJoined", (clientId, clientName) => {
         return
     const msg = `${clientName} has joined`
     appendNewServerMessage(msg)
-    const clientLi = generateClientSidebarLi(clientId, clientName)
+    const clientLi = generateClientSidebarLiWithFriendAdd(clientId, clientName)
     document.getElementById(`usersInRoom`).appendChild(clientLi)
 })
 

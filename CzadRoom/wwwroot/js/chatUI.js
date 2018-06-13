@@ -43,6 +43,13 @@ function generateClientSidebarLi(clientId, clientName) {
     const clientLi = document.createElement('li')
     clientLi.setAttribute('id', `li-${clientName}`)
     clientLi.setAttribute('class', 'userInSidebar')
+    return clientLi
+}
+
+function generateClientSidebarLiWithFriendAdd(clientId, clientName) {
+    const clientLi = document.createElement('li')
+    clientLi.setAttribute('id', `li-${clientName}`)
+    clientLi.setAttribute('class', 'userInSidebar')
 
     const button = document.createElement('button')
     button.setAttribute('data-toggle', 'modal')

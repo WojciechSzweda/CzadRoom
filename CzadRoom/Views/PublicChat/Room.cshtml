@@ -13,9 +13,9 @@
         </div>
         <div class="col-md-1 col-sm-2 sidebar-users">
             <ul id="usersInRoom">
-                @*@foreach (var user in Model.UsersInRoom) {
-                        <li class="userInSidebar" id="li-@user.Username"></li>
-                    }*@
+                @foreach (var user in Model.ClientsName) {
+                        <li class="userInSidebar" id="li-@user">@user</li>
+                    }
             </ul>
         </div>
         <div class="col-md-12 message-textbox">
