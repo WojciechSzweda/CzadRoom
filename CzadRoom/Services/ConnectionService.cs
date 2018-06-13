@@ -20,6 +20,11 @@ namespace CzadRoom.Services
             return _connections.Where(x => x.Value.RoomID == roomId).Distinct().Select(x => x.Value.UserID);
         }
 
+        public RoomConnection GetRoomConnection(string connectionId) {
+            _connections.TryGetValue(connectionId, out RoomConnection roomConnection);
+            return roomConnection;
+        }
+
         public void RemoveAllConnections() {
             _connections.Clear();
         }

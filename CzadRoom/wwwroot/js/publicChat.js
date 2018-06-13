@@ -1,22 +1,24 @@
 ﻿const connection = new signalR.HubConnectionBuilder()
-    .withUrl("/chatHub")
+    .withUrl("/publicHub")
     .build()
 
+let username
 
 connection.on("ReceiveMessage", (user, message, roomId) => {
-    appendNewMessage(user,message)
+    appendNewMessage(user, message)
 })
 
 connection.on("ReceiveServerMessage", (message) => {
     appendNewServerMessage(message)
 })
 
-connection.on("ClientJoined", (clientId, clientName) => {
+connection.on("ClientJoined", (clientName) => {
+    console.log(clientName)
     if (document.getElementById(`li-${clientName}`) !== null)
         return
     const msg = `${clientName} has joined`
     appendNewServerMessage(msg)
-    const clientLi = generateClientSidebarLi(clientId, clientName)
+    const clientLi = generateClientSidebarLi(clientName, clientName)
     document.getElementById(`usersInRoom`).appendChild(clientLi)
 })
 
@@ -26,10 +28,11 @@ connection.on("ClientLeft", (client) => {
     document.getElementById(`li-${client}`).remove()
 })
 
-connection.on("Connected", () => {
+connection.on("Connected", async () => {
     const roomID = document.getElementById("RoomID").value
-    connection.invoke("JoinRoom", roomID).catch(err => console.error(err.toString()))
-    getMessages()
+    username = await getUsername()
+    console.log(username)
+    connection.invoke("JoinRoom", roomID, username).catch(err => console.error(err.toString()))
 })
 
 
@@ -60,17 +63,15 @@ function sendMessage() {
     input.value = ""
 }
 
-async function getMessages() {
-    const roomID = document.getElementById("RoomID").value;
-    const request = fetch('./GetMessages', {
+async function getUsername() {
+    const request = fetch('./GetUsername', {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        credentials: 'same-origin',
-        body: JSON.stringify({ roomID, count: 10 })
+        credentials: 'same-origin'
     })
     const data = await getRequestData(request)
     if (data === null)
         return
-    data.forEach(x => appendNewMessage(x.username, x.content, x.date))
+    console.log(data)
+    return data
 }
 

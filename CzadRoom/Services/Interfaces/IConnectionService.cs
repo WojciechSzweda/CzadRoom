@@ -13,5 +13,6 @@ namespace CzadRoom.Services.Interfaces
         void RemoveAllConnections();
         int ConnectedUsersCount(string roomId);
         IEnumerable<string> ConnectedUsersID(string roomId);
+        RoomConnection GetRoomConnection(string connectionId);
     }
 }

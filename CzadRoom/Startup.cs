@@ -39,13 +39,13 @@ namespace CzadRoom {
 
             services.AddTransient<IMongoDbContext, MongoDbContext>();
             services.AddTransient<IUsersService, UsersService>();
-            services.AddTransient<ILogger, Logger>();
             services.AddTransient<IJwtToken, JwtTokenManager>();
             services.AddTransient<IChatRoomService, ChatRoomService>();
             services.AddTransient<IFileManager, FileManager>();
             services.AddTransient<IChatMessageService, ChatMessageService>();
             services.AddTransient<IDirectMessageRoomService, DirectMessageRoomService>();
             services.AddTransient<IDirectMessageService, DirectMessageService>();
+            services.AddTransient<IPublicRoomService, PublicRoomService>();
 
             services.AddSingleton<IServerCommands, ServerCommands>();
             services.AddSingleton<IConnectionService, ConnectionService>();
@@ -91,6 +91,7 @@ namespace CzadRoom {
             app.UseSignalR(routes => {
                 routes.MapHub<ChatHub>("/chatHub");
                 routes.MapHub<DirectMessageHub>("/dmHub");
+                routes.MapHub<PublicHub>("/publicHub");
             });
 
             app.UseSession();

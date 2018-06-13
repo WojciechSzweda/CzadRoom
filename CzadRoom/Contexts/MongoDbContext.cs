@@ -18,6 +18,7 @@ namespace CzadRoom.Contexts
         public IMongoCollection<ChatRoom> Rooms => _db.GetCollection<ChatRoom>("Rooms");
         public IMongoCollection<ChatMessage> ChatMessages => _db.GetCollection<ChatMessage>("ChatMessages");
         public IMongoCollection<DirectMessageRoom> DirectMessagesRooms => _db.GetCollection<DirectMessageRoom>("DirectMessageRooms");
+        public IMongoCollection<PublicRoom> PublicRooms => _db.GetCollection<PublicRoom>("PublicRooms");
         public IMongoCollection<DirectMessage> DirectMessages => _db.GetCollection<DirectMessage>("DirectMessages");
     }
 }
