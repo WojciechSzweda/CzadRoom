@@ -8,10 +8,10 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace CzadRoom.Services {
-    public class FileManager : IFileManager {
+    public class FileService : IFileService {
         private readonly string _imagesPath;
 
-        public FileManager(IHostingEnvironment hostingEnvironment) {
+        public FileService(IHostingEnvironment hostingEnvironment) {
             _imagesPath = Path.Combine(hostingEnvironment.WebRootPath, "images");
         }
 
@@ -26,7 +26,7 @@ namespace CzadRoom.Services {
         }
 
         public string UploadImage(IFormFile file, string username) {
-            var fileName = username + DateTime.Now;
+            var fileName = username;
 
             if (!Directory.Exists(_imagesPath))
                 Directory.CreateDirectory(_imagesPath);

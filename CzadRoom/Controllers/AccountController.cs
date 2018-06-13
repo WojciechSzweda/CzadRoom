@@ -21,12 +21,12 @@ namespace CzadRoom.Controllers {
     public class AccountController : Controller {
         private readonly IUsersService _usersService;
         private readonly IMapper _mapper;
-        private readonly IFileManager _fileManager;
+        private readonly IFileService _fileService;
 
-        public AccountController(IUsersService usersService, IMapper mapper, IFileManager fileManager) {
+        public AccountController(IUsersService usersService, IMapper mapper, IFileService fileService) {
             _usersService = usersService;
             _mapper = mapper;
-            _fileManager = fileManager;
+            _fileService = fileService;
         }
 
         [HttpGet]
@@ -53,10 +53,10 @@ namespace CzadRoom.Controllers {
             }
             var user = _mapper.Map<User>(userVM);
             user.Password = BCrypt.Net.BCrypt.HashPassword(userVM.Password, BCrypt.Net.BCrypt.GenerateSalt());
-            if (_fileManager.ValidateImage(userVM.Avatar))
-                user.AvatarName = _fileManager.UploadImage(userVM.Avatar, userVM.Username);
+            if (userVM.Avatar != null && _fileService.ValidateImage(userVM.Avatar))
+                user.AvatarName = _fileService.UploadImage(userVM.Avatar, userVM.Username);
             else
-                user.AvatarName = _fileManager.GetImagePath("defaultAvatar.png");
+                user.AvatarName = _fileService.GetImagePath("defaultAvatar.png");
             await _usersService.Create(user);
             return RedirectToAction("Login");
         }

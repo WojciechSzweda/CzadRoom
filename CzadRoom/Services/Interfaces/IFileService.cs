@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CzadRoom.Services.Interfaces
 {
-    public interface IFileManager
+    public interface IFileService
     {
         bool ValidateImage(IFormFile file);
         string UploadImage(IFormFile file, string username);

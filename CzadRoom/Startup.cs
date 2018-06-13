@@ -42,7 +42,7 @@ namespace CzadRoom {
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<IJwtToken, JwtTokenManager>();
             services.AddTransient<IChatRoomService, ChatRoomService>();
-            services.AddTransient<IFileManager, FileManager>();
+            services.AddTransient<IFileService, FileService>();
             services.AddTransient<IChatMessageService, ChatMessageService>();
             services.AddTransient<IDirectMessageRoomService, DirectMessageRoomService>();
             services.AddTransient<IDirectMessageService, DirectMessageService>();
