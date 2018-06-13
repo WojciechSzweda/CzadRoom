@@ -53,6 +53,8 @@ namespace CzadRoom.Controllers {
         [HttpPost]
         public async Task<IActionResult> JoinRoom(ChatRoomJoinViewModel roomJoin) {
             var roomDB = await _roomService.GetRoom(roomJoin.ID);
+            if (roomDB == null)
+                return RedirectToAction("Index");
             if (!ModelState.IsValid)
                 return View(roomJoin);
             if (!string.IsNullOrEmpty(roomDB.Password) && string.IsNullOrEmpty(roomJoin.Password))
@@ -66,10 +68,13 @@ namespace CzadRoom.Controllers {
         }
 
         public async Task<IActionResult> Room(string roomId) {
+            var roomDB = await _roomService.GetRoom(roomId);
+            if (roomDB == null)
+                return RedirectToAction("Index");
             var userID = HttpContext.GetUserID();
             if (!_roomService.HasUserAccess(roomId, userID))
                 return RedirectToAction("JoinRoom", new { roomId });
-            var roomDB = await _roomService.GetRoom(roomId);
+            
             var users = (_roomService.ConnectedUsers(_connectionService.ConnectedUsersID(roomId), roomId)).Distinct(new UserComparer());
             var room = _mapper.Map<ChatRoom, ChatRoomViewModel>(roomDB, opt =>
                  opt.AfterMap((src, dest) => dest.UsersInRoom = users.Where(x => x.ID != userID).Select(x => _mapper.Map<UserViewModel>(x))));
