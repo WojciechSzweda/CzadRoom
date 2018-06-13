@@ -13,7 +13,6 @@ connection.on("ReceiveServerMessage", (message) => {
 })
 
 connection.on("ClientJoined", (clientName) => {
-    console.log(clientName)
     if (document.getElementById(`li-${clientName}`) !== null)
         return
     const msg = `${clientName} has joined`
@@ -31,7 +30,6 @@ connection.on("ClientLeft", (client) => {
 connection.on("Connected", async () => {
     const roomID = document.getElementById("RoomID").value
     username = await getUsername()
-    console.log(username)
     connection.invoke("JoinRoom", roomID, username).catch(err => console.error(err.toString()))
 })
 
@@ -71,7 +69,6 @@ async function getUsername() {
     const data = await getRequestData(request)
     if (data === null)
         return
-    console.log(data)
     return data
 }
 

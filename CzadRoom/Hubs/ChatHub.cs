@@ -47,8 +47,10 @@ namespace CzadRoom.Hubs {
 
         public async Task JoinRoom(string roomId) {
             var userId = Context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
-            if (_roomService.HasUserAccess(roomId, userId))
-                await Clients.Caller.SendAsync("ReceiveServerMessage", "error");
+            if (!_roomService.HasUserAccess(roomId, userId)) {
+                await Clients.Caller.SendAsync("ReceiveServerMessage", "no access");
+                return;
+            }
             await Groups.AddToGroupAsync(Context.ConnectionId, roomId);
             _connectionService.UserConnected(Context.ConnectionId, new RoomConnection { RoomID = roomId, UserID = userId });
             await Clients.Group(roomId).SendAsync("ClientJoined", userId, Context.User.Identity.Name);
