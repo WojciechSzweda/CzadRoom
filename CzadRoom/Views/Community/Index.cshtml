@@ -1,0 +1,38 @@
+﻿@model IEnumerable<CzadRoom.ViewModels.UserViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Friends</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Username)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AvatarName)
+            </th>
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Username)
+            </td>
+            <td>
+               <img src="~/images/@Html.DisplayFor(modelItem => item.AvatarName)" width="64" height="64"/>
+            </td>
+            <td>
+                @Html.ActionLink("DM", "DirectMessage", new {friendId= item.ID})
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

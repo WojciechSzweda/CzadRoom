@@ -18,11 +18,9 @@ namespace CzadRoom.Controllers
     public class AccountsController : Controller
     {
         private readonly IUsersService _usersService;
-        private readonly ILogger _logger;
         private readonly IJwtToken _jwtToken;
-        public AccountsController(IUsersService usersService, ILogger logger, IJwtToken jwtToken) {
+        public AccountsController(IUsersService usersService, IJwtToken jwtToken) {
             _usersService = usersService;
-            _logger = logger;
             _jwtToken = jwtToken;
         }
 
@@ -56,7 +54,6 @@ namespace CzadRoom.Controllers
                 return new NotFoundResult();
             user.ID = userDB.ID;
             await _usersService.Update(user);
-            _logger.Log($"Updated user: {userDB.Username}");
             return new OkObjectResult(user);
         }
 
@@ -69,7 +66,6 @@ namespace CzadRoom.Controllers
             if (userDB == null)
                 return Json($"{username} doesnt exists");
             await _usersService.Delete(username);
-            _logger.Log($"Deleted user: {userDB.Username}");
             return new OkResult();
         }
 

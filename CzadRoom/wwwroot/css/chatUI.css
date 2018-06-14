@@ -1,0 +1,128 @@
+﻿/*div {
+    border: 1px solid black;
+}*/
+
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed|Roboto+Slab');
+
+
+
+/*font-family: 'Roboto Condensed', sans-serif;
+
+font-family: 'Roboto Slab', serif;*/
+
+
+
+.chat-main {
+    max-height: 90vh;
+}
+
+.chat-room-info {
+    height: 5vh;
+    overflow: hidden;
+}
+
+    .chat-room-info h2 {
+        margin: 0;
+        font-size: 5vh;
+    }
+
+
+#messagesList {
+    overflow: scroll;
+    overflow-x: hidden;
+    max-height: 100%;
+    list-style-type: none;
+}
+
+.message-textbox {
+    height: 10vh;
+}
+
+.message-list-box {
+    height: 68vh;
+    border-top: 4px solid whitesmoke;
+}
+
+#messageInput {
+    margin: 0;
+    padding: 0;
+    height: 90%;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 2.5rem;
+    text-align: start;
+    resize: none;
+}
+
+.btn-holder {
+    height: 100%;
+    padding: 0 0 5px 2px;
+}
+
+#btnSendMsg {
+    height: 100%;
+    width: 100%;
+    font-size: 3vh;
+}
+
+.button-sendMsg-text {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 32px;
+}
+
+.message {
+    border-style: solid;
+    border-width: 13px 0 0 13px;
+    border-color: whitesmoke;
+    padding: 4px;
+}
+
+.message-client {
+    font-weight: 700;
+    font-family: 'Roboto Slab', serif;
+    border-bottom: 1px dashed #e1d3d3;
+}
+
+.message-date {
+    font-weight: normal;
+    font-size: 75%;
+    margin-left: 20px;
+}
+
+.message-content {
+    font-family: 'Roboto Condensed', sans-serif;
+    margin-left: 12px;
+    margin-top: 3px;
+}
+
+.sidebar-users {
+    background-color: whitesmoke;
+}
+
+    .sidebar-users ul {
+        list-style-type: circle;
+        -webkit-padding-start: 0px;
+        padding-left: 2px;
+        font-family: 'Roboto Slab', serif;
+        font-weight: 700;
+    }
+
+.userInSidebar {
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+@media screen and (max-width: 450px) {
+    .button-sendMsg-text {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    #usersInRoom {
+        display: none;
+    }
+
+    .button-sendMsg-text {
+        font-size: 18px;
+    }
+}

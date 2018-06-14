@@ -50,5 +50,23 @@ namespace CzadRoom.Services {
             return await _context.Users.Find(_ => true).ToListAsync();
         }
 
+        public async Task<IEnumerable<User>> GetFriends(string userId) {
+            var userDb = await _context.Users.Find(x => x.ID == userId).FirstOrDefaultAsync();
+            return userDb.FriendsID.Select(id => _context.Users.Find(user => user.ID == id).FirstOrDefault());
+        }
+
+        public async Task<bool> AddFriend(string userId, string friendId) {
+            if (friendId == userId)
+                return false;
+            var user = await _context.Users.Find(x => x.ID == userId).FirstOrDefaultAsync();
+            var friend = await _context.Users.Find(x => x.ID == friendId).FirstOrDefaultAsync();
+            if (friend != null && user != null) {
+                var updateResult = await _context.Users.UpdateOneAsync(
+                    x => x.ID == userId,
+                    Builders<User>.Update.AddToSet(x => x.FriendsID, friendId));
+                return updateResult.IsAcknowledged && updateResult.ModifiedCount > 0;
+            }
+            return false;
+        }
     }
 }

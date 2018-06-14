@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 
 namespace CzadRoom.ViewModels
 {
-    public class RoomViewModel
+    public class DirectMessageRoomViewModel
     {
         public string ID { get; set; }
-        public string Name { get; set; }
-        public int ClientCount { get; set; }
-        public bool HasPassword { get; set; }
+        public UserViewModel Recipent { get; set; }
+        public bool HasNewMessage { get; set; }
     }
 }

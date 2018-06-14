@@ -7,7 +7,7 @@ using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Driver;
 
 namespace CzadRoom.Models {
-    public class Room {
+    public class ChatRoom {
         [BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
         public string ID { get; set; }
         public string Name { get; set; }
@@ -16,13 +16,10 @@ namespace CzadRoom.Models {
 
         public string OwnerID { get; set; }
         public HashSet<string> UsersIDWithAccess { get; set; }
-        public HashSet<string> CurrentUsersID { get; set; }
 
-        public Room() {
-            ID = Guid.NewGuid().ToString();
+        public ChatRoom() {
             CreationDate = DateTime.Now;
             UsersIDWithAccess = new HashSet<string>();
-            CurrentUsersID = new HashSet<string>();
         }
     }
 }

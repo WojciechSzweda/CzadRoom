@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -20,6 +21,6 @@ namespace CzadRoom.ViewModels {
         [Required]
         [Compare("Password", ErrorMessage = "Passwords are not the same")]
         public string RepeatPassword { get; set; }
-        public string Nickname { get; set; }
+        public IFormFile Avatar { get; set; }
     }
 }

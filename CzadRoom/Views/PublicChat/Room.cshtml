@@ -1,0 +1,34 @@
+﻿@model PublicRoomViewModel
+@using Microsoft.AspNetCore.Http
+<div class="container">
+    <input asp-for="ID" type="hidden" id="RoomID" />
+
+    <div class="row chat-main">
+        <div class="chat-room-info">
+            <h3>Hello! Your random name is: @Context.Session.GetString("Nickname")</h3>
+            <h2>@Model.Name</h2>
+        </div>
+        <div class="col-md-11 col-sm-10 message-list-box">
+            <ul id="messagesList"></ul>
+        </div>
+        <div class="col-md-1 col-sm-2 sidebar-users">
+            <ul id="usersInRoom">
+                @foreach (var user in Model.ClientsName) {
+                        <li class="userInSidebar" id="li-@user">@user</li>
+                    }
+            </ul>
+        </div>
+        <div class="col-md-12 message-textbox">
+            <textarea type="text" id="messageInput" rows="4" class="col-xs-10" autofocus></textarea>
+            <div class="col-xs-2 btn-holder">
+                <button class="btn" id="btnSendMsg">
+                    <span class="button-sendMsg-text">Send</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/webUtility.js"></script>
+<script src="~/lib/signalr/signalr.js"></script>
+<script src="~/js/publicChat.js"></script>
+<script src="~/js/chatUI.js"></script>

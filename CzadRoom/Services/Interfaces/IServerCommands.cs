@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 
 namespace CzadRoom.Services.Interfaces
 {
-    public interface IChatService
+    public interface IServerCommands
     {
-        
-        void SendMessageToRoom(string message);
-    
+        string ExecuteCommand(string command);
     }
 }

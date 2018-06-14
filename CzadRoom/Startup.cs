@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
@@ -39,9 +40,19 @@ namespace CzadRoom {
 
             services.AddTransient<IMongoDbContext, MongoDbContext>();
             services.AddTransient<IUsersService, UsersService>();
-            services.AddTransient<ILogger, Logger>();
             services.AddTransient<IJwtToken, JwtTokenManager>();
-            services.AddTransient<IRoomService, RoomService>();
+            services.AddTransient<IChatRoomService, ChatRoomService>();
+            services.AddTransient<IFileService, FileService>();
+            services.AddTransient<IChatMessageService, ChatMessageService>();
+            services.AddTransient<IDirectMessageRoomService, DirectMessageRoomService>();
+            services.AddTransient<IDirectMessageService, DirectMessageService>();
+            services.AddTransient<IPublicRoomService, PublicRoomService>();
+
+            services.AddSingleton<IServerCommands, ServerCommands>();
+            services.AddSingleton<IConnectionService, ConnectionService>();
+
+            services.AddDistributedMemoryCache();
+            services.AddSession();
 
             services.AddAuthentication(options => {
                 options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -50,6 +61,7 @@ namespace CzadRoom {
             }).AddCookie(options => {
                 options.AccessDeniedPath = new PathString("/Account/Login");
                 options.LoginPath = new PathString("/Account/Login");
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
             }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options => {
                 options.TokenValidationParameters = new TokenValidationParameters {
                     ValidateIssuer = true,
@@ -74,19 +86,26 @@ namespace CzadRoom {
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseForwardedHeaders(new ForwardedHeadersOptions {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+
             app.UseAuthentication();
             app.UseStaticFiles();
 
             app.UseSignalR(routes => {
                 routes.MapHub<ChatHub>("/chatHub");
+                routes.MapHub<DirectMessageHub>("/dmHub");
+                routes.MapHub<PublicHub>("/publicHub");
             });
+
+            app.UseSession();
 
             app.UseMvc(routes => {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
         }
     }
 }

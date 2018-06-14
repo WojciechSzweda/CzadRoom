@@ -6,7 +6,6 @@
 
 <h2>Register</h2>
 
-<h4>UserRegisterViewModel</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -37,9 +36,9 @@
                 <span asp-validation-for="RepeatPassword" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Nickname" class="control-label"></label>
-                <input asp-for="Nickname" class="form-control" />
-                <span asp-validation-for="Nickname" class="text-danger"></span>
+                <label asp-for="Avatar" class="control-label"></label>
+                <input asp-for="Avatar" type="file" class="form-control"/>
+                <span asp-validation-for="Avatar" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
@@ -48,11 +47,6 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
 }

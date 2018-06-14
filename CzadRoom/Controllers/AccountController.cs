@@ -20,13 +20,13 @@ using Microsoft.IdentityModel.Tokens;
 namespace CzadRoom.Controllers {
     public class AccountController : Controller {
         private readonly IUsersService _usersService;
-        private readonly ILogger _logger;
         private readonly IMapper _mapper;
+        private readonly IFileService _fileService;
 
-        public AccountController(IUsersService usersService, ILogger logger, IMapper mapper) {
+        public AccountController(IUsersService usersService, IMapper mapper, IFileService fileService) {
             _usersService = usersService;
-            _logger = logger;
             _mapper = mapper;
+            _fileService = fileService;
         }
 
         [HttpGet]
@@ -51,11 +51,13 @@ namespace CzadRoom.Controllers {
                 ViewData["Error"] = "Email already in use";
                 return View();
             }
-            //TODO: nickname creator
             var user = _mapper.Map<User>(userVM);
             user.Password = BCrypt.Net.BCrypt.HashPassword(userVM.Password, BCrypt.Net.BCrypt.GenerateSalt());
+            if (userVM.Avatar != null && _fileService.ValidateImage(userVM.Avatar))
+                user.AvatarName = _fileService.UploadImage(userVM.Avatar, userVM.Username);
+            else
+                user.AvatarName = _fileService.GetImagePath("defaultAvatar.png");
             await _usersService.Create(user);
-            _logger.Log($"Created user: {user.Username}");
             return RedirectToAction("Login");
         }
 
@@ -81,7 +83,6 @@ namespace CzadRoom.Controllers {
                 return Json("password mismatch");
             }
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, CreateClaimsPrincipal(userDB));
-            _logger.Log($"Login user: {userDB.Username}");
             return RedirectToLocal(returnUrl);
         }
 

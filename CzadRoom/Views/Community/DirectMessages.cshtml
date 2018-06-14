@@ -1,0 +1,36 @@
+﻿@model IEnumerable<CzadRoom.ViewModels.DirectMessageRoomViewModel>
+
+<h2>Direct Messages</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Recipent)
+            </th>
+            <th>
+                New Message
+            </th>
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Recipent.Username)
+                </td>
+                <td>
+                    @if (item.HasNewMessage) {
+                        <span class="glyphicon glyphicon-envelope" />
+                    }
+                </td>
+                <td>
+                    @Html.ActionLink("Open Direct Message", "DirectMessage", new { roomId = item.ID })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

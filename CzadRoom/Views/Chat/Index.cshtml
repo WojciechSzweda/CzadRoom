@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CzadRoom.ViewModels.RoomViewModel>
+﻿@model IEnumerable<CzadRoom.ViewModels.ChatRoomViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -7,10 +7,8 @@
 <h2>Index</h2>
 
 <p>
-    <a asp-action="CreateRoom">Create New</a>
+    <a asp-action="CreateRoom">Create New Room</a>
 </p>
-<div id="dialogBox">
-</div>
 <table class="table">
     <thead>
         <tr>
@@ -48,7 +46,6 @@
                 </td>
                 <td>
                     @Html.ActionLink("Join", "JoinRoom", new { roomID = item.ID })
-                    @*@Html.ActionLink("Join", "Room", new { roomId = item.RoomID })*@
                 </td>
             </tr>
         }
