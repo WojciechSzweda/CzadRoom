@@ -1,3 +1,6 @@
-<div>
-    nav-menu!
-</div>
+<nav mat-tab-nav-bar>
+    <a mat-tab-link *ngFor="let link of links" [active]="activeLink == link" [routerLink]="link.path" (click)="activeLink = link"
+        backgroundColor="primary">
+        {{ link.name }}
+    </a>
+</nav>
