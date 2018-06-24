@@ -101,10 +101,20 @@ namespace CzadRoom {
 
             app.UseSession();
 
-            app.UseMvc(routes => {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+            // app.UseMvc(routes => {
+            //     routes.MapRoute(
+            //         name: "default",
+            //         template: "{controller=Home}/{action=Index}/{id?}");
+            // });
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "ClientApp";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                }
             });
         }
     }
