@@ -14,6 +14,7 @@ export class PublicChatHubComponent implements OnInit {
 
   constructor(http: HttpClient, private hostConfig: HostConfig) {
     http.get<PublicRoom[]>(hostConfig.baseURL + 'api/publicchat/rooms').subscribe(result => {
+      console.log(result)
       this.rooms = result
     }, error => console.error(error))
     http.post<string>(hostConfig.baseURL + 'api/publicchat/getusername', null).subscribe(result => {

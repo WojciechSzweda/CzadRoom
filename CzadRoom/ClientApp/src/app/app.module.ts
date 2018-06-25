@@ -34,9 +34,10 @@ import { PublicChatHubComponent } from './public-chat-hub/public-chat-hub.compon
     RouterModule.forRoot([
       { path: '', component: HomeComponent },
       { path: 'chat', component: ChatRoomComponent },
-      { path: 'publichub', component: PublicChatHubComponent },
+      { path: 'public', component: PublicChatHubComponent },
       { path: 'messages', component: DirectMessagesComponent },
       { path: 'friends', component: FriendsComponent },
+      { path: 'public/room/:id', component: PublicRoomComponent },
     ]),
     BrowserAnimationsModule,
     LayoutModule,
