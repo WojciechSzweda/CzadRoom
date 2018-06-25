@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace CzadRoom.Controllers {
+    [Route("api/[controller]")]
     public class PublicChatController : Controller {
         private readonly IPublicRoomService _publicRoomService;
         private readonly IMapper _mapper;
@@ -24,25 +25,25 @@ namespace CzadRoom.Controllers {
             _connectionService = connectionService;
         }
 
-        public async Task<IActionResult> Index() {
+        [HttpGet("[action]")]
+        public async Task<IActionResult> Rooms() {
             await NicknameMiddleware();
             var rooms = await _publicRoomService.GetAll();
             var roomsVM = rooms.Select(x => _mapper.Map<PublicRoom, PublicRoomViewModel>(x, opt =>
-            opt.AfterMap((src, dest) => dest.ClientCount = _connectionService.ConnectedUsersCount(src.ID))));
-            return View(roomsVM);
+                opt.AfterMap((src, dest) => dest.ClientCount = _connectionService.ConnectedUsersCount(src.ID))));
+            return Json(roomsVM);
         }
-
 
         public async Task<IActionResult> Room(string roomId) {
             await NicknameMiddleware();
             var roomDB = await _publicRoomService.GetRoom(roomId);
             var room = _mapper.Map<PublicRoom, PublicRoomViewModel>(roomDB, opt =>
-             opt.AfterMap((src, dest) =>
-                 dest.ClientsName = _connectionService.ConnectedUsersID(roomId)));
-            return View(room);
+                    opt.AfterMap((src, dest) =>
+                        dest.ClientsName = _connectionService.ConnectedUsersID(roomId)));
+            return Json(room);
         }
 
-        [HttpPost]
+        [HttpPost("[action]")]
         public async Task<IActionResult> GetUsername() {
             return Json(await NicknameMiddleware());
         }
@@ -54,8 +55,7 @@ namespace CzadRoom.Controllers {
             if (string.IsNullOrEmpty(value)) {
                 Nickname = await GetRandomNickname();
                 HttpContext.Session.SetString(sessionKey, JsonConvert.SerializeObject(Nickname));
-            }
-            else {
+            } else {
                 Nickname = JsonConvert.DeserializeObject<string>(value);
             }
             return Nickname;
@@ -66,12 +66,11 @@ namespace CzadRoom.Controllers {
             public string Nickname { get; set; }
         }
 
-
         private async Task<string> GetRandomNickname() {
             var url = "https://api.codetunnel.net/random-nick";
             var postContent = JsonConvert.SerializeObject(new { sizeLimit = 15 });
-            using (var httpClient = new HttpClient()) {
-                using (var httpResponse = await httpClient.PostAsync(url, new StringContent(postContent, Encoding.UTF8, "application/json"))) {
+            using(var httpClient = new HttpClient()) {
+                using(var httpResponse = await httpClient.PostAsync(url, new StringContent(postContent, Encoding.UTF8, "application/json"))) {
                     if (httpResponse.StatusCode == System.Net.HttpStatusCode.OK) {
                         var response = JsonConvert.DeserializeObject<NicknameResponse>(await httpResponse.Content.ReadAsStringAsync());
                         if (response.Success)

@@ -22,7 +22,7 @@ export class AppNavComponent {
     this.links = [
       { name: 'Home', path: '' },
       { name: 'Chat Room', path: 'chat' },
-      { name: 'Public Room', path: 'public' },
+      { name: 'Public Rooms Hub', path: 'publichub' },
       { name: 'Direct Messages', path: 'messages' },
       { name: 'Friends', path: 'friends' }
     ]

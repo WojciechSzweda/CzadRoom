@@ -1,13 +1,13 @@
-import { Component, OnInit, Inject } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import {HostConfig} from '../host.service'
+import { HostConfig } from 'src/app/host.service'
 
 @Component({
-  selector: 'app-public-room',
-  templateUrl: './public-room.component.html',
-  styleUrls: ['./public-room.component.css']
+  selector: 'app-public-chat-hub',
+  templateUrl: './public-chat-hub.component.html',
+  styleUrls: ['./public-chat-hub.component.css']
 })
-export class PublicRoomComponent implements OnInit {
+export class PublicChatHubComponent implements OnInit {
 
   rooms: Object[]
   username: string
