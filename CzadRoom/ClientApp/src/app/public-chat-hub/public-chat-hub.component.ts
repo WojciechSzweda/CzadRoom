@@ -19,7 +19,7 @@ export class PublicChatHubComponent implements OnInit {
     }, error => console.error(error))
     http.post<string>(hostConfig.baseURL + 'api/publicchat/getusername', null).subscribe(result => {
       this.username = result
-    })
+    }, error => console.error(error))
   }
 
   ngOnInit() {

@@ -34,12 +34,13 @@ namespace CzadRoom.Controllers {
             return Json(roomsVM);
         }
 
-        public async Task<IActionResult> Room(string roomId) {
+        [HttpGet("[action]/{id}")]
+        public async Task<IActionResult> Room(string id) {
             await NicknameMiddleware();
-            var roomDB = await _publicRoomService.GetRoom(roomId);
+            var roomDB = await _publicRoomService.GetRoom(id);
             var room = _mapper.Map<PublicRoom, PublicRoomViewModel>(roomDB, opt =>
                     opt.AfterMap((src, dest) =>
-                        dest.ClientsName = _connectionService.ConnectedUsersID(roomId)));
+                        dest.ClientsName = _connectionService.ConnectedUsersID(id)));
             return Json(room);
         }
 
