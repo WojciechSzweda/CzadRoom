@@ -6,3 +6,18 @@
   width: 200px;
   box-shadow: 3px 0 6px rgba(0,0,0,.24);
 }
+
+
+#mainContent {
+  margin: 10px;
+}
+
+#title {
+  text-decoration: none;
+  margin-left: 10px;
+  height: 100%;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  color: white;
+}

@@ -17,6 +17,7 @@
         "semicolon": [
             true,
             "never"
-        ]
+        ],
+        "max-line-length": [true, 120]
     }
 }

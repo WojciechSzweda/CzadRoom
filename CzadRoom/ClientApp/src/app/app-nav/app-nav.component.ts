@@ -10,11 +10,29 @@ import { map } from 'rxjs/operators'
 })
 export class AppNavComponent {
 
+  links: Object[]
+  activeLink: Object
+  isMobileMode: boolean
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches)
     )
 
-  constructor(private breakpointObserver: BreakpointObserver) { }
+  constructor(private breakpointObserver: BreakpointObserver) {
+    this.links = [
+      { name: 'Home', path: '' },
+      { name: 'Chat Room', path: 'chat' },
+      { name: 'Public Room', path: 'public' },
+      { name: 'Direct Messages', path: 'messages' },
+      { name: 'Friends', path: 'friends' }
+    ]
+    this.activeLink = this.links[0]
+    this.isHandset$.subscribe(x => this.isMobileMode = x)
+  }
 
+  public closeDrawer(drawerCallback: any): void {
+    if (this.isHandset$) {
+      drawerCallback()
+    }
+  }
 }
