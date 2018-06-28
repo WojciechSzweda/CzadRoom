@@ -40,6 +40,7 @@ namespace CzadRoom.Hubs {
 
         public override async Task OnDisconnectedAsync(Exception exception) {
             var (isDisconnected, connection) = _connectionService.UserDisconnected(Context.ConnectionId);
+            await Clients.All.SendAsync($"{isDisconnected}:{connection.RoomID}");
             if (isDisconnected)
                 await Clients.Group(connection.RoomID).SendAsync("ClientLeft", connection.UserID);
             await base.OnDisconnectedAsync(exception);

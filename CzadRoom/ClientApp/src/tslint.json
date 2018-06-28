@@ -19,6 +19,7 @@
             "never"
         ],
         "max-line-length": [true, 120],
-        "eofline": false
+        "eofline": false,
+        "curly": false
     }
 }

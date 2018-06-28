@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { HostConfig } from 'src/app/host.service'
+import { PublicChatService } from '../public-chat.service'
 
 @Component({
   selector: 'app-public-chat-hub',
@@ -9,16 +10,12 @@ import { HostConfig } from 'src/app/host.service'
 })
 export class PublicChatHubComponent implements OnInit {
 
-  rooms: Object[]
+  rooms: PublicRoom[]
   username: string
 
-  constructor(http: HttpClient, private hostConfig: HostConfig) {
-    http.get<PublicRoom[]>(hostConfig.baseURL + 'api/publicchat/rooms').subscribe(result => {
-      this.rooms = result
-    }, error => console.error(error))
-    http.post<string>(hostConfig.baseURL + 'api/publicchat/getusername', null).subscribe(result => {
-      this.username = result
-    }, error => console.error(error))
+  constructor(private publicChatService: PublicChatService) {
+    publicChatService.getRooms().subscribe(result => this.rooms = result, err => console.error(err))
+    publicChatService.getUsername().subscribe(result => this.username = result, err => console.error(err))
   }
 
   ngOnInit() {

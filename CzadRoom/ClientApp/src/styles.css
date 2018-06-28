@@ -9,18 +9,16 @@ html, body {
 }
 
 .content {
-    background-color: #fff;
     padding-bottom: 100px;
     width: 100%;
     padding: 0;
+    border-bottom: 5px solid #000;
 }
 
 .messages {
     overflow: scroll;
     overflow-x: hidden;
-    max-height: 67vh;
-    height: 100%;
-    background-color: aqua;
+    height: 67vh;
 }
 
 .bottom-send-message {

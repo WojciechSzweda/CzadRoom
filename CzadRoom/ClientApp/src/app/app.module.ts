@@ -7,7 +7,6 @@ import { HttpClientModule } from '@angular/common/http'
 import { AppComponent } from './app.component'
 
 import 'hammerjs'
-import { ChatRoomComponent } from './chat-room/chat-room.component'
 import { PublicRoomComponent } from './public-chat/public-room/public-room.component'
 import { FriendsComponent } from './friends/friends.component'
 import { HomeComponent } from './home/home.component'
@@ -17,11 +16,12 @@ import { LayoutModule } from '@angular/cdk/layout'
 import { PublicChatHubComponent } from './public-chat/public-chat-hub/public-chat-hub.component'
 import { DirectMessagesHubComponent } from './direct-messages/direct-messages-hub/direct-messages-hub.component'
 import { DirectMessageRoomComponent } from './direct-messages/direct-message-room/direct-message-room.component'
+import { ChatHubComponent } from './chat/chat-hub/chat-hub.component'
+import { ChatRoomComponent } from './chat/chat-room/chat-room.component'
 
 @NgModule({
   declarations: [
     AppComponent,
-    ChatRoomComponent,
     PublicRoomComponent,
     FriendsComponent,
     HomeComponent,
@@ -29,6 +29,8 @@ import { DirectMessageRoomComponent } from './direct-messages/direct-message-roo
     PublicChatHubComponent,
     DirectMessagesHubComponent,
     DirectMessageRoomComponent,
+    ChatHubComponent,
+    ChatRoomComponent,
   ],
   imports: [
     BrowserModule,
@@ -36,7 +38,7 @@ import { DirectMessageRoomComponent } from './direct-messages/direct-message-roo
     RouterModule.forRoot([
       { path: '', redirectTo: '/home', pathMatch: 'full' },
       { path: 'home', component: HomeComponent },
-      { path: 'chat', component: ChatRoomComponent },
+      { path: 'chat', component: ChatHubComponent },
       { path: 'public', component: PublicChatHubComponent },
       { path: 'messages', component: DirectMessagesHubComponent },
       { path: 'friends', component: FriendsComponent },
