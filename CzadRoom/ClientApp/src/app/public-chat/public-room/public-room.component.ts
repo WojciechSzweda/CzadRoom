@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, ViewChild, ElementRef, AfterViewChecked } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import { HostConfig } from '../host.service'
+import { HostConfig } from 'src/app/host.service'
 import { ActivatedRoute } from '@angular/router'
 
 @Component({
