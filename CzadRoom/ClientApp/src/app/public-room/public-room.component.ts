@@ -41,7 +41,6 @@ export class PublicRoomComponent implements OnInit, AfterViewChecked {
   }
 
   sendMessage(message) {
-    console.log(message)
     this.messageInput.nativeElement.value = ''
     this.messages.push({ user: 'tester', content: `${message}` })
   }
