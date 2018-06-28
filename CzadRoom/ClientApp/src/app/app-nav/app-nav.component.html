@@ -3,7 +3,8 @@
     [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="!(isHandset$ | async)">
     <mat-toolbar color="primary" (click)="isMobileMode && drawer.close()">Menu</mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item *ngFor="let link of links" [routerLink]="link.path" [class.activePath]="link == activeLink" (click)="activeLink = link; isMobileMode && drawer.close()">
+      <a mat-list-item *ngFor="let link of links" [routerLink]="link.path" (click)="activeLink = link; isMobileMode && drawer.close()"
+        [class.activePath]="link == activeLink" [routerLinkActive]="['active-nav']">
         {{link.name}}
       </a>
     </mat-nav-list>
@@ -13,7 +14,7 @@
       <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()" *ngIf="isHandset$ | async">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
-      <a id="title" routerLink="" (click)="activeLink = links[0]">Czad Room - {{activeLink.name}}</a>
+      <a id="title" [routerLink]="activeLink.path" >Czad Room - {{activeLink.name}}</a>
     </mat-toolbar>
     <div id="mainContent">
       <router-outlet></router-outlet>

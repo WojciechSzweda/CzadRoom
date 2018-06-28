@@ -31,3 +31,7 @@
   top: 0; /* Sets the sticky toolbar to be on top */
   z-index: 1000; /* Ensure that your app's content doesn't overlap the toolbar */
 }
+
+.active-nav {
+  background-color: rgba(99, 62, 202, 0.24)
+}

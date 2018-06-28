@@ -2,6 +2,7 @@ import { Component } from '@angular/core'
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
+import { Router, ActivatedRoute } from '@angular/router'
 
 @Component({
   selector: 'app-nav',
@@ -10,9 +11,10 @@ import { map } from 'rxjs/operators'
 })
 export class AppNavComponent {
 
-  links: Object[]
-  activeLink: Object
+  links: Link[]
+  activeLink: Link
   isMobileMode: boolean
+  currentUrl: string
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches)
@@ -20,7 +22,7 @@ export class AppNavComponent {
 
   constructor(private breakpointObserver: BreakpointObserver) {
     this.links = [
-      { name: 'Home', path: '' },
+      { name: 'Home', path: 'home' },
       { name: 'Chat Room', path: 'chat' },
       { name: 'Public Rooms Hub', path: 'public' },
       { name: 'Direct Messages', path: 'messages' },
@@ -35,4 +37,9 @@ export class AppNavComponent {
       drawerCallback()
     }
   }
+}
+
+interface Link {
+  path: string
+  name: string
 }
