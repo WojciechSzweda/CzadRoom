@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core'
+import { Component, OnInit, Inject, ViewChild, ElementRef, AfterViewChecked } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { HostConfig } from '../host.service'
 import { ActivatedRoute } from '@angular/router'
@@ -8,7 +8,10 @@ import { ActivatedRoute } from '@angular/router'
   templateUrl: './public-room.component.html',
   styleUrls: ['./public-room.component.css']
 })
-export class PublicRoomComponent implements OnInit {
+export class PublicRoomComponent implements OnInit, AfterViewChecked {
+
+  @ViewChild('messageInput') messageInput: ElementRef
+  @ViewChild('messagesList') messagesList: ElementRef
 
   room: Object
   username: string
@@ -29,8 +32,32 @@ export class PublicRoomComponent implements OnInit {
   ngOnInit() {
     this.messages = []
     for (let i = 0; i < 20; i++) {
-      this.messages.push({user: 'tester', content: `hello ${i}`})
+      this.messages.push({ user: 'tester', content: `hello ${i}` })
     }
   }
 
+  ngAfterViewChecked() {
+    this.scrollToBottom()
+  }
+
+  sendMessage(message) {
+    console.log(message)
+    this.messageInput.nativeElement.value = ''
+    this.messages.push({ user: 'tester', content: `${message}` })
+  }
+
+  keyDown(event, message) {
+    if (event.keyCode === 13 && !event.shiftKey) {
+      this.sendMessage(message)
+      event.preventDefault()
+    }
+  }
+
+  scrollToBottom() {
+    try {
+      this.messagesList.nativeElement.scrollTop = this.messagesList.nativeElement.scrollHeight
+    } catch (err) {
+      console.error(err)
+    }
+  }
 }

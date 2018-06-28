@@ -2,15 +2,17 @@
     <mat-toolbar class="roomName-toolbar" color="primary">
         <span>{{room?.name}}</span>
     </mat-toolbar>
-    <mat-list class="messages">
-        <mat-list-item *ngFor="let msg of messages">{{msg.content}}</mat-list-item>
-    </mat-list>
+    <div class="messages" #messagesList>
+        <mat-list>
+            <mat-list-item *ngFor="let msg of messages">{{msg.content}}</mat-list-item>
+        </mat-list>
+    </div>
 </div>
 <div class="bottom-send-message">
     <mat-form-field class="bottom-input">
-        <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1" cdkAutosizeMaxRows="3" placeholder="type your message"
-            value="">
+        <textarea matInput #messageInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1" cdkAutosizeMaxRows="3"
+            placeholder="type your message" value="" (keydown)="keyDown($event, messageInput.value)">
     </textarea>
     </mat-form-field>
-    <button mat-raised-button class="bottom-button" id="sendMessageButton">Send</button>
+    <button mat-raised-button class="bottom-button" (click)="sendMessage(messageInput.value); messageInput.value=''" id="sendMessageButton">Send</button>
 </div>
